@@ -22,7 +22,7 @@ The title of the email. Mainly for reference purpose as it will not be displayed
 	
 The main content of the email, provided by partial templates associated directly to each notice type.
 
-<p class="alert alert-info" markdown="1">The default width of the email is set to 600px, to ensure maximum compatibility with most email clients restrictions. More useful information on the [Campaign Monitor website](http://www.campaignmonitor.com/resources/will-it-work/width/).</p>
+> The default width of the email is set to 600px, to ensure maximum compatibility with most email clients restrictions. More useful information on the [Campaign Monitor website](http://www.campaignmonitor.com/resources/will-it-work/width/).
 
 ### Base template (TXT)
 
@@ -34,7 +34,7 @@ Variables:
 
 	{% block content %}{% endblock %}
 	
-<p class="alert alert-info" markdown="1">Please note that the "title" variable is not included as it would be displayed on the email (which we don't want).</p>
+> Please note that the "title" variable is not included as it would be displayed on the email (which we don't want).
 
 ### Default template (HTML)
 
