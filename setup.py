@@ -14,7 +14,7 @@ CLASSIFIERS = [
 ]
 
 install_requires = [
-    'djrill==0.3.1',
+    'djrill==0.4',
     'cssutils==0.9.10',
     # 'django-reversion==1.6.3',
     # 'PIL==1.1.7',
