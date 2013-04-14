@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<table class="table">
+	<tr><th>Notice</th><th>Preview</th></tr>
+	{% for notice in notice_map %}
+	<tr><td>{{notice.name}}</td><td><a href="/admin/notification/{{notice.identifier}}/">HTML</a> | <a href="/notification/{{notice.identifier}}/text/">TXT</a></td></tr>
+	{% endfor %}
+</table>
+{% endblock %} 
+
