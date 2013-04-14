@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.template import Context
 from django.utils.translation import ugettext_lazy as _ 
 from django.utils import formats
-from cotimail import settings
+from cotimail import settings as cotimail_settings
 
 from .utils import inline_css
 
@@ -30,7 +30,7 @@ class Notice(object):
 
 	sender = 'App <no-reply@example.com>'
 	recipients = ['Firstname Lastname <firstname.lastname@example.com>',]
-	reply_to = settings.COTIMAIL_REPLY_EMAIL
+	reply_to = cotimail_settings.COTIMAIL_REPLY_EMAIL
 
 	context = {}
 

@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
+from cotimail import settings as cotimail_settings
 from cotimail import notices
 
 @login_required
@@ -13,7 +14,7 @@ def list(request):
 	
 	template = 'admin/cotimail/list.html'
 
-	for app_module in settings.COTIMAIL_APPS:
+	for app_module in cotimail_settings.COTIMAIL_APPS:
 		# Import module specify in the notification apps setting
 		module = importlib.import_module(app_module)
 
@@ -32,7 +33,7 @@ def preview(request, slug, text=False):
 
 	body_html = ""
 
-	for app_module in settings.COTIMAIL_APPS:
+	for app_module in cotimail_settings.COTIMAIL_APPS:
 		# Import module specify in the notification apps setting
 		module = importlib.import_module(app_module)
 

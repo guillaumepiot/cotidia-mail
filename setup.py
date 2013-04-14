@@ -50,7 +50,7 @@ for dirpath, dirnames, filenames in os.walk('cotimail'):
 
 setup(
     name="cotimail",
-    description="Transaction email management",
+    description="A Django transaction email manager, based on Djrill (a Mandrill API integration)",
     version=VERSION,
     author="Guillaume Piot",
     author_email="guillaume@cotidia.com",
