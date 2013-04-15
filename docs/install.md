@@ -32,3 +32,10 @@ Define a list of apps supporting notices. The list should be pointing to individ
 		'booking.notices',
 	]
 	
+Enter your Mandrill APY key
+
+	MANDRILL_API_KEY = "myapp-api-key"
+	
+Setup the Django email backend
+
+	EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"

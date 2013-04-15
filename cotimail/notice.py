@@ -20,6 +20,8 @@ from .utils import inline_css
 # 	name = 'Default notice'
 # 	identifier = 'default-notice'
 
+__all__ = ('Notice',)
+
 class Notice(object):
 	name = 'Notice'
 	identifier = 'notice'
@@ -64,6 +66,22 @@ class Notice(object):
 			headers=self.headers # optional extra headers
 		)
 		msg.attach_alternative(self.get_body_html(), "text/html")
+
+		# Mandrill options
+		msg.track_opens = self.track_opens
+		msg.track_clicks = self.track_clicks
+		msg.auto_text = self.auto_text
+		msg.url_strip_qs = self.url_strip_qs
+		msg.preserve_recipients = self.preserve_recipients
+		msg.global_merge_vars = self.global_merge_vars
+		msg.recipient_merge_vars = self.recipient_merge_vars
+		msg.tags = self.tags
+		msg.google_analytics_domains = self.google_analytics_domains
+		msg.google_analytics_campaign = self.google_analytics_campaign
+		msg.metadata = self.metadata
+		msg.recipient_metadata = self.recipient_metadata
+
+		# Send the message
 		msg.send()
 
 	def get_body_html(self, context=False):
