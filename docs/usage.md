@@ -13,7 +13,7 @@ The notice will inherit the BaseNotice class and must follow those guidelines:
 - It must have an  'identifier' attribute
 
 
-	from cotimail import Notice
+	from cotimail.notice import Notice
 
 	class CustomNotice(Notice):
 		# Use as a list display
