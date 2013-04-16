@@ -45,7 +45,7 @@ class Notice(object):
 	global_merge_vars = {} # a dict -- e.g., { 'company': "ACME", 'offer': "10% off" }
 	recipient_merge_vars = {} # a dict whose keys are the recipient email addresses and whose values are dicts of merge vars for each recipient -- e.g., { 'wiley@example.com': { 'offer': "15% off anvils" } }
 	tags = '' # a list of strings
-	google_analytics_domains = False # a list of string domain names
+	google_analytics_domains = [] # a list of string domain names
 	google_analytics_campaign = '' # a string or list of strings
 	metadata = {} # a dict
 	recipient_metadata = {} # a dict whose keys are the recipient email addresses, and whose values are dicts of metadata for each recipient (similar to recipient_merge_vars)

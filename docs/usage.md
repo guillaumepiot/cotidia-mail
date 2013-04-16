@@ -1,8 +1,8 @@
 Usage
 =====
 
-Create a new notice
--------------------
+Create a new notice class
+-------------------------
 
 Notices are basically an email type where the context and the template may vary. Also, it can be configured with any attributes that Mandrill allows to be passed via the API. A list of the attributes can be find on the [Djrill documentation](https://djrill.readthedocs.org/en/master/usage/sending_mail.html#mandrill-specific-options).
 
@@ -30,5 +30,5 @@ The notice will inherit the BaseNotice class and must follow those guidelines:
 		# Passing on come context variables to build the subject line 
 		subject = u'%s %s' % ('Your enquiry for', context['subject_var'])
 	
-> It is recommend to add you notice template inside the app templates folder to keep it organised.
+> It is recommend to add your notice template inside the app `templates` folder to keep it organised.
 

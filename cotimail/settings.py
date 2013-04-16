@@ -11,5 +11,6 @@ COTIMAIL_REPLY_EMAIL = getattr(settings, 'COTIMAIL_REPLY_EMAIL', 'reply@example.
 #     'booking.notices',
 # ]
 
-COTIMAIL_REPLY_EMAIL = getattr(settings, 'COTIMAIL_APPS', [])
+COTIMAIL_APPS = getattr(settings, 'COTIMAIL_APPS', [])
+
 	

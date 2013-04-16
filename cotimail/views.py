@@ -7,12 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from cotimail import settings as cotimail_settings
-from cotimail import notices
 
 @login_required
 def list(request):
 	
 	template = 'admin/cotimail/list.html'
+
+	NOTICE_MAP = []
 
 	for app_module in cotimail_settings.COTIMAIL_APPS:
 		# Import module specify in the notification apps setting
@@ -24,7 +25,7 @@ def list(request):
 			if obj.__name__.endswith('Notice') and hasattr(obj, 'identifier') and obj.__name__ != 'Notice':
 				NOTICE_MAP.append(obj())
 
-	return render_to_response(template, {},
+	return render_to_response(template, {'notice_map':NOTICE_MAP},
 	context_instance=RequestContext(request))
 
 
