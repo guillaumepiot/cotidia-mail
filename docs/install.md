@@ -22,26 +22,21 @@ Project setup
 
 ### settings.py
 
-Setup a reply to email:
-
+	# Setup a reply to email:
 	COTIMAIL_REPLY_EMAIL = 'noreply@mywebsite.com'
 
-Define a list of apps supporting notices. The list should be pointing to individual notices.py
-
+	# Define a list of apps supporting notices. The list should be pointing to individual notices.py
 	COTIMAIL_APPS = [
 		'booking.notices',
 	]
-	
-Enter your Mandrill APY key
-
+		
+	# Enter your Mandrill APY key
 	MANDRILL_API_KEY = "myapp-api-key"
-	
-Setup the Django email backend
-
+		
+	# Setup the Django email backend
 	EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 
-Add cotimail to your installed apps
-
+	# Add cotimail to your installed apps
 	INSTALLED_APPS = (
 		...
 	    'cotimail',

@@ -37,10 +37,13 @@ class Notice(object):
 	context = {}
 
 	# Mandrill meta data
+	# Complete send call API doc available here: https://mandrillapp.com/api/docs/messages.html
 	track_opens = False # Boolean
 	track_clicks = False # Boolean (If you want to track clicks in HTML only, not plaintext mail, you must not set this property, and instead just set the default in your Mandrill account sending options.)
-	auto_text = False # Boolean
-	url_strip_qs = False # Boolean
+	auto_text = False # whether or not to automatically generate a text part for messages that are not given text
+	auto_html = False # whether or not to automatically generate an HTML part for messages that are not given HTML
+	inline_css = True # whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size
+	url_strip_qs = False # whether or not to strip the query string from URLs when aggregating tracked URL data
 	preserve_recipients = False # Boolean
 	global_merge_vars = {} # a dict -- e.g., { 'company': "ACME", 'offer': "10% off" }
 	recipient_merge_vars = {} # a dict whose keys are the recipient email addresses and whose values are dicts of merge vars for each recipient -- e.g., { 'wiley@example.com': { 'offer': "15% off anvils" } }
@@ -71,6 +74,8 @@ class Notice(object):
 		msg.track_opens = self.track_opens
 		msg.track_clicks = self.track_clicks
 		msg.auto_text = self.auto_text
+		msg.auto_html = self.auto_html
+		msg.inline_css = self.inline_css
 		msg.url_strip_qs = self.url_strip_qs
 		msg.preserve_recipients = self.preserve_recipients
 		msg.global_merge_vars = self.global_merge_vars
@@ -90,7 +95,7 @@ class Notice(object):
 		else:
 			email_context = self.get_context()
 		body_html = render_to_string(self.html_template, self.body_vars, email_context)
-		body_html = inline_css(body_html)
+		#body_html = inline_css(body_html)
 		return body_html
 
 	def get_body_txt(self, context=False):
