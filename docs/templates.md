@@ -60,3 +60,8 @@ _Location: notice/default.txt_
 	{% block content %}
 		Hello!
 	{% endblock %}
+
+CSS inlining
+------------
+
+The Mandrill CSS inlining is used by default, but can be quite picky about your head css formatting. It seems to fall over contidional comments, **so it is highly recommend to test if Mandrill has inlined the css in our email template before going to production mode**.

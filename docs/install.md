@@ -8,7 +8,7 @@ You can install Cotimail from source by downloading the package from BitBucket: 
 
 	$ python setup.py install
 
-Though it is easier to install it using PIP:
+Though it is easier to install it using PIP: (not published yet)
 
 	$ pip install cotimail
 
@@ -41,6 +41,20 @@ Project setup
 		...
 	    'cotimail',
 	)
+
+	# Use the local css inlining feature
+	COTIMAIL_INLINE_CSS_LOCAL = getattr(settings, 'COTIMAIL_INLINE_CSS_LOCAL', False)
+
+	# Use MAndrill css inlining feature - email max limit is 256KB
+	COTIMAIL_INLINE_CSS_MANDRILL = getattr(settings, 'COTIMAIL_INLINE_CSS_MANDRILL', True)
+
+	# Queue mail using logs rather than sending straight away
+	COTIMAIL_QUEUE_MAIL = False
+
+	# Save email log in the database, it will be forced to True if COTIMAIL_QUEUE_MAIL is True
+	COTIMAIL_LOG_MAIL = True
+
+
 
 Enable admin management
 -----------------------

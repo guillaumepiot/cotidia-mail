@@ -1,13 +1,16 @@
-import json, datetime
+import json, datetime, cPickle, datetime
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.template import Context
 from django.utils.translation import ugettext_lazy as _ 
 from django.utils import formats
+from django.forms.models import model_to_dict
+
 from cotimail import settings as cotimail_settings
 
 from .utils import inline_css
+from .models import EmailLog
 
 # Note about custom notice
 # All notice classes name must ends with 'Notice', have a unique 'identifer' attribute and a 'name' attribute
@@ -42,7 +45,7 @@ class Notice(object):
 	track_clicks = False # Boolean (If you want to track clicks in HTML only, not plaintext mail, you must not set this property, and instead just set the default in your Mandrill account sending options.)
 	auto_text = False # whether or not to automatically generate a text part for messages that are not given text
 	auto_html = False # whether or not to automatically generate an HTML part for messages that are not given HTML
-	inline_css = True # whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size
+	inline_css = True if cotimail_settings.COTIMAIL_INLINE_CSS_MANDRILL else False # whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size
 	url_strip_qs = False # whether or not to strip the query string from URLs when aggregating tracked URL data
 	preserve_recipients = False # Boolean
 	global_merge_vars = {} # a dict -- e.g., { 'company': "ACME", 'offer': "10% off" }
@@ -53,13 +56,74 @@ class Notice(object):
 	metadata = {} # a dict
 	recipient_metadata = {} # a dict whose keys are the recipient email addresses, and whose values are dicts of metadata for each recipient (similar to recipient_merge_vars)
 
-
 	def __init__(self, **kwargs):
 		for k in kwargs.keys():
 		   self.__setattr__(k, kwargs[k])
 
-		  
+	@property
+	def headers(self):
+		_headers = {}
+		if self.reply_to:
+			_headers['Reply-To'] = self.reply_to
+		return _headers
+
+	@property
+	def get_identifier(self):
+		return u"%s" % self.identifier
+
+	def get_context(self, context=False):
+		if context:
+			return Context(context)
+		else:
+			return Context(self.context)
+
+	def get_body_html(self, context=False):
+		if context:
+			email_context = self.get_context(context)
+		else:
+			email_context = self.get_context()
+		body_html = render_to_string(self.html_template, self.body_vars, email_context)
+		if cotimail_settings.COTIMAIL_INLINE_CSS_LOCAL:
+			body_html = inline_css(body_html)
+		return body_html
+
+	def get_body_txt(self, context=False):
+		if context:
+			email_context = self.get_context(context)
+		else:
+			email_context = self.get_context()
+		return render_to_string(self.text_template, self.body_vars, email_context)
+
+	def get_subject(self):
+		return self.subject
+
 	def send(self):
+
+		if cotimail_settings.COTIMAIL_QUEUE_MAIL:
+			self.log(status='QUEUED')
+		else:
+			self.process_and_send()
+			if cotimail_settings.COTIMAIL_LOG_MAIL:
+				self.log(status='SENT')
+
+	def log(self, status):
+		pickled_notice = cPickle.dumps(self).encode("base64")
+
+		email_log = EmailLog()
+		email_log.subject = self.get_subject()
+		email_log.pickled_data = pickled_notice
+		email_log.name = self.name
+		email_log.identifier = self.identifier
+		email_log.recipients = ", ".join(self.recipients)
+		email_log.sender = self.sender
+		email_log.reply_to = self.reply_to
+		email_log.status = status
+		if status == 'SENT':
+			email_log.date_sent = datetime.datetime.now()
+		email_log.save()
+
+
+	def process_and_send(self):
 
 		msg = EmailMultiAlternatives(
 			subject=self.subject,
@@ -89,41 +153,9 @@ class Notice(object):
 		# Send the message
 		msg.send()
 
-	def get_body_html(self, context=False):
-		if context:
-			email_context = self.get_context(context)
-		else:
-			email_context = self.get_context()
-		body_html = render_to_string(self.html_template, self.body_vars, email_context)
-		#body_html = inline_css(body_html)
-		return body_html
-
-	def get_body_txt(self, context=False):
-		if context:
-			email_context = self.get_context(context)
-		else:
-			email_context = self.get_context()
-		return render_to_string(self.text_template, self.body_vars, email_context)
-
-	def get_subject(self):
-		return self.subject
-
-	def get_context(self, context=False):
-		if context:
-			return Context(context)
-		else:
-			return Context(self.context)
+		return True
 	
-	@property
-	def headers(self):
-		_headers = {}
-		if self.reply_to:
-			_headers['Reply-To'] = self.reply_to
-		return _headers
 
-	@property
-	def get_identifier(self):
-		return u"%s" % self.identifier
 
 
 

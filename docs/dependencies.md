@@ -15,7 +15,7 @@ Description: Djrill is an email backend and new message class for Django users t
 
 Implementation: Handle sending by processing the email data and passing to the Mandrill API.
 
-## CSS utils
+## CSS utils (optional is using local inlining rather than Mandrill css inlining which is recommended and set by default)
 
 Package: **cssutils==0.9.10**
 

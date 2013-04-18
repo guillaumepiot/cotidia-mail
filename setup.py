@@ -15,14 +15,7 @@ CLASSIFIERS = [
 
 install_requires = [
     'djrill==0.4',
-    'cssutils==0.9.10',
-    # 'django-reversion==1.6.3',
-    # 'PIL==1.1.7',
-    # 'sorl-thumbnail==11.12',
-    # 'south==0.7.6',
-    # '-e git+https://bitbucket.org/guillaumepiot/cotidia-redactor.git',
-    # '-e git+https://bitbucket.org/guillaumepiot/cotidia-filemanager.git',
-    # '-e git+https://guillaumepiot@bitbucket.org/guillaumepiot/cotidia-admin-tools.git#egg=admin_tools',
+    #'cssutils==0.9.10',
 ]
 
 # taken from django-registration
