@@ -3,6 +3,7 @@ import inspect, importlib
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.template.defaultfilters import linebreaksbr
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
@@ -45,7 +46,7 @@ def preview(request, slug, text=False):
 				notice = obj()
 				if notice.identifier == slug:
 					body_html = notice.get_body_html()
-					body_txt = notice.get_body_txt()
+					body_txt = linebreaksbr(notice.get_body_txt())
 
 					# notice = obj(
 					#     sender = 'App <info@app.com>',

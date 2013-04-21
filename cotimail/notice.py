@@ -134,7 +134,7 @@ class Notice(object):
 	def _process_and_send(self):
 
 		msg = EmailMultiAlternatives(
-			subject=self.subject,
+			subject=self.get_subject(),
 			body=self.get_body_txt(),
 			from_email=self.sender,
 			to=self.recipients,

@@ -65,3 +65,6 @@ class EmailLog(models.Model):
 			return True
 		else:
 			return False
+
+	def get_recipients(self):
+		return self.recipients.split(',')
