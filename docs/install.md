@@ -23,6 +23,7 @@ Project setup
 ### settings.py
 
 	# Setup a reply to email:
+	# Default: reply@example.com
 	COTIMAIL_REPLY_EMAIL = 'noreply@mywebsite.com'
 
 	# Define a list of apps supporting notices. The list should be pointing to individual notices.py
@@ -43,16 +44,28 @@ Project setup
 	)
 
 	# Use the local css inlining feature
+	# Default: False
 	COTIMAIL_INLINE_CSS_LOCAL = getattr(settings, 'COTIMAIL_INLINE_CSS_LOCAL', False)
 
 	# Use MAndrill css inlining feature - email max limit is 256KB
+	# Default: True
 	COTIMAIL_INLINE_CSS_MANDRILL = getattr(settings, 'COTIMAIL_INLINE_CSS_MANDRILL', True)
 
 	# Queue mail using logs rather than sending straight away
-	COTIMAIL_QUEUE_MAIL = False
+	# Default: True
+	COTIMAIL_QUEUE_MAIL = True
 
 	# Save email log in the database, it will be forced to True if COTIMAIL_QUEUE_MAIL is True
+	# Default: True
 	COTIMAIL_LOG_MAIL = True
+
+	# How long to wait for the lock to become available. Default of -1 means to never wait for the lock to become available.
+	# This only applies when using crontab setup to execute the emit_notices management command to send queued messages rather # than sending immediately.
+	# Default: -1
+	COTIMAIL_LOCK_WAIT_TIMEOUT = -1
+
+
+
 
 
 

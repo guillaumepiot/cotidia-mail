@@ -106,6 +106,9 @@ class Notice(object):
 			if cotimail_settings.COTIMAIL_LOG_MAIL:
 				self.log(status='SENT')
 
+	def queue(self):
+		self.log(status='QUEUED')
+
 	def log(self, status):
 		pickled_notice = cPickle.dumps(self).encode("base64")
 
