@@ -39,6 +39,9 @@ class Notice(object):
 
 	context = {}
 
+	#Hook the notice to an object
+	content_object = False
+
 	# Mandrill meta data
 	# Complete send call API doc available here: https://mandrillapp.com/api/docs/messages.html
 	track_opens = False # Boolean
@@ -97,15 +100,15 @@ class Notice(object):
 	def get_subject(self):
 		return self.subject
 
-	def send(self):
+	def send(self, force_now=False):
 
-		if cotimail_settings.COTIMAIL_QUEUE_MAIL:
-			self.log(status='QUEUED')
-		else:
-			self.process_and_send()
+		if force_now or not cotimail_settings.COTIMAIL_QUEUE_MAIL:
+			self._process_and_send()
 			if cotimail_settings.COTIMAIL_LOG_MAIL:
 				self.log(status='SENT')
-
+		else:
+			self.log(status='QUEUED')
+			
 	def queue(self):
 		self.log(status='QUEUED')
 
@@ -123,10 +126,12 @@ class Notice(object):
 		email_log.status = status
 		if status == 'SENT':
 			email_log.date_sent = datetime.datetime.now()
+		if self.content_object:
+			email_log.content_object = self.content_object
 		email_log.save()
 
 
-	def process_and_send(self):
+	def _process_and_send(self):
 
 		msg = EmailMultiAlternatives(
 			subject=self.subject,
@@ -154,9 +159,9 @@ class Notice(object):
 		msg.recipient_metadata = self.recipient_metadata
 
 		# Send the message
-		msg.send()
+		response = msg.send()
 
-		return True
+		return response
 	
 
 

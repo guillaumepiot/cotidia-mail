@@ -51,7 +51,7 @@ class EmailLog(models.Model):
 
 	def send(self):
 		notice_obj = cPickle.loads(str(self.pickled_data).decode("base64"))
-		send = notice_obj.process_and_send()
+		send = notice_obj._process_and_send()
 		now = datetime.datetime.now()
 		if send:
 			self.status = 'SENT'
@@ -60,3 +60,8 @@ class EmailLog(models.Model):
 			self.status = 'FAILED'
 		self.date_updated = now
 		self.save()
+
+		if self.status == 'SENT':
+			return True
+		else:
+			return False

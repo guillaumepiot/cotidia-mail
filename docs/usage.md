@@ -35,5 +35,16 @@ The notice will inherit the BaseNotice class and must follow those guidelines:
 Send a notice
 -------------
 
-
+	# Initiate the notice with necessary variables
+	notice = HelloNotice(
+		sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
+		# A list of recipients emails
+		recipients = ['guillaume@piot.co.uk'],
+		context = {'sender_name':'Guillaume Piot'},
+		
+		# Optional: hook to an object
+		content_object = obj
+	)
+	# Send the notice straight away
+	notice.send()
 
