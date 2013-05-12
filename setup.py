@@ -15,7 +15,7 @@ CLASSIFIERS = [
 
 install_requires = [
     'djrill==0.4',
-    #'cssutils==0.9.10',
+    'cssutils==0.9.10',
 ]
 
 # taken from django-registration
