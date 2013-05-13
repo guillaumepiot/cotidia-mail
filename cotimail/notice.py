@@ -58,6 +58,9 @@ class Notice(object):
 	google_analytics_campaign = '' # a string or list of strings
 	metadata = {} # a dict
 	recipient_metadata = {} # a dict whose keys are the recipient email addresses, and whose values are dicts of metadata for each recipient (similar to recipient_merge_vars)
+	# Attachments
+	# A list of dictionary containing the raw file data
+	attachments = [] #[{"content_type": "application/pdf","name": "myfile.txt","file_path": "/file/doc.pdf"}]
 
 	def __init__(self, **kwargs):
 		for k in kwargs.keys():
@@ -157,6 +160,10 @@ class Notice(object):
 		msg.google_analytics_campaign = self.google_analytics_campaign
 		msg.metadata = self.metadata
 		msg.recipient_metadata = self.recipient_metadata
+		
+		if self.attachments:
+			for attachment in self.attachments:
+				msg.attach_file(attachment['file_path'], attachment['content_type'])
 
 		# Send the message
 		response = msg.send()

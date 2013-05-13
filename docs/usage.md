@@ -48,3 +48,16 @@ Send a notice
 	# Send the notice straight away
 	notice.send()
 
+Attachments
+-----------
+
+Attachments must be added as an attribute of the notice object:
+
+	notice.attachments = [{"content_type": "application/pdf", "file_path": "/file/doc.pdf" }]
+
+When the notice is processed to be sent, it will attach its file to the message as such:
+
+	if self.attachments:
+		for attachment in self.attachments:
+			msg.attach_file(attachment['file_path'], attachment['content_type'])
+
