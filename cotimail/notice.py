@@ -80,11 +80,13 @@ class Notice(object):
 
 	def get_context(self, context=False):
 		if context:
-			context = self.default_context.update(context)
-			return Context(context)
+			the_context = self.default_context
+			the_context.update(context)
+			return Context(the_context)
 		else:
-			context = self.default_context.update(self.context)
-			return Context(context)
+			the_context = self.default_context
+			the_context.update(self.context)
+			return Context(the_context)
 
 	def get_body_html(self, context=False):
 		if context:
