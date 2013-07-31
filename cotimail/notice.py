@@ -37,6 +37,7 @@ class Notice(object):
 	recipients = ['Firstname Lastname <firstname.lastname@example.com>',]
 	reply_to = cotimail_settings.COTIMAIL_REPLY_EMAIL
 
+	default_context = {}
 	context = {}
 
 	#Hook the notice to an object
@@ -79,9 +80,11 @@ class Notice(object):
 
 	def get_context(self, context=False):
 		if context:
+			context = self.default_context.update(context)
 			return Context(context)
 		else:
-			return Context(self.context)
+			context = self.default_context.update(self.context)
+			return Context(context)
 
 	def get_body_html(self, context=False):
 		if context:

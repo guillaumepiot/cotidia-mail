@@ -24,6 +24,9 @@ The notice will inherit the BaseNotice class and must follow those guidelines:
 		html_template = 'path/to/template.html'
 		text_template = 'path/to/template.txt'
 
+		# A context passed to every request (merge with `context`)
+		default_context = {'site_url':'http://example.com'}
+		
 		# A JSON representation of the context dictionary, which is the format it will be saved as in the EmailLog
 		context = {'subject_var': 'My subject variable'}
 		
