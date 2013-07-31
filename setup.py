@@ -36,7 +36,7 @@ for dirpath, dirnames, filenames in os.walk('cotimail'):
             pkg = pkg.replace(os.path.altsep, '.')
         packages.append(pkg)
     elif filenames:
-        prefix = dirpath[12:] # Strip "cotimail/" or "cotimail\"
+        prefix = dirpath[9:] # Strip "cotimail/" or "cotimail\"
         for f in filenames:
             data_files.append(os.path.join(prefix, f))
 
