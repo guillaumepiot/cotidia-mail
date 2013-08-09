@@ -3,7 +3,7 @@ import json, datetime, cPickle, datetime
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.template import Context
-from django.utils.translation import ugettext_lazy as _ 
+from django.utils.translation import ugettext_lazy as _
 from django.utils import formats
 from django.forms.models import model_to_dict
 
@@ -116,7 +116,7 @@ class Notice(object):
 				self.log(status='SENT')
 		else:
 			self.log(status='QUEUED')
-			
+
 	def queue(self):
 		self.log(status='QUEUED')
 
@@ -165,16 +165,19 @@ class Notice(object):
 		msg.google_analytics_campaign = self.google_analytics_campaign
 		msg.metadata = self.metadata
 		msg.recipient_metadata = self.recipient_metadata
-		
+
 		if self.attachments:
 			for attachment in self.attachments:
-				msg.attach_file(attachment['file_path'], attachment['content_type'])
+				if attachment.has_key('file') and attachment.has_key('filename'):
+					msg.attach(attachment['filename'], attachment['file'], attachment['content_type'])
+				else:
+					msg.attach_file(attachment['file_path'], attachment['content_type'])
 
 		# Send the message
 		response = msg.send()
 
 		return response
-	
+
 
 
 
