@@ -6,6 +6,7 @@ from django.template import Context
 from django.utils.translation import ugettext_lazy as _
 from django.utils import formats
 from django.forms.models import model_to_dict
+from django.utils.timezone import now
 
 from cotimail import settings as cotimail_settings
 
@@ -133,7 +134,7 @@ class Notice(object):
 		email_log.reply_to = self.reply_to
 		email_log.status = status
 		if status == 'SENT':
-			email_log.date_sent = datetime.datetime.now()
+			email_log.date_sent = now()
 		if self.content_object:
 			email_log.content_object = self.content_object
 		email_log.save()
