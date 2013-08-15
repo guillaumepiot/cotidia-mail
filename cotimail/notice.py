@@ -34,7 +34,7 @@ class Notice(object):
 	subject = u'%s' % _('Default subject')
 	body_vars = False
 
-	sender = 'App <no-reply@example.com>'
+	sender = cotimail_settings.COTIMAIL_SENDER
 	recipients = ['Firstname Lastname <firstname.lastname@example.com>',]
 	reply_to = cotimail_settings.COTIMAIL_REPLY_EMAIL
 
