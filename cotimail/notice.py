@@ -1,4 +1,4 @@
-import json, datetime, cPickle, datetime
+import json, cPickle
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
