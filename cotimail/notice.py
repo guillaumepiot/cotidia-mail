@@ -149,7 +149,8 @@ class Notice(object):
 			to=self.recipients,
 			headers=self.headers # optional extra headers
 		)
-		msg.attach_alternative(self.get_body_html(), "text/html")
+		if self.html_template:
+			msg.attach_alternative(self.get_body_html(), "text/html")
 
 		# Mandrill options
 		msg.track_opens = self.track_opens
