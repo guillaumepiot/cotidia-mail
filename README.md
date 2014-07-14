@@ -1,8 +1,8 @@
 # About
 
-Cotimail is a transaction email manager for Django. It is built for application that rely on transaction email to communicate with their users, allowing the management and sending of large quantity of transaction emails while keeping control on content, style and history.
+Cotimail is a transaction email manager for Django. It is built for applications that rely on transactional email to communicate with their users, allowing the management and sending of transactional emails in large quantities. This is all done while keeping control of content, style and history.
 
-It users Djrill (a Mandrill API integration) to send emails, though doesn't use its templating ability as it does done by Cotimail.
+It users Djrill (a Mandrill API integration) to send emails, though doesn't use its templating ability as this is done by Cotimail.
 
 Features:
 
@@ -11,5 +11,5 @@ Features:
 - Keep a transaction history from email logs.
 - Create email queues from un-sent logged emails, and manageable by a cron job by using a Django command.
 - Relate an email notice to any object instance in the application.
-- Create notices in a app basis by extending the default notice model.
-- Create and send notice from any level in the application, including public views, admin views and signals.
+- Create notices on a per app basis by extending the default notice model.
+- Create and send notices from any level in the application, including public views, admin views and signals.
