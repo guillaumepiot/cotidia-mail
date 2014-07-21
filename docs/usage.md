@@ -12,6 +12,7 @@ The notice will inherit the BaseNotice class and must follow those guidelines:
 - It must have a 'name' attribute
 - It must have an  'identifier' attribute
 
+Example notice class:
 
 	from cotimail.notice import Notice
 
