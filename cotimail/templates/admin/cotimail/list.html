@@ -4,7 +4,7 @@
 <table class="table">
 	<tr><th>Notice</th><th>Preview</th></tr>
 	{% for notice in notice_map %}
-	<tr><td>{{notice.name}}</td><td><a href="{{notice.identifier}}/">HTML</a> | <a href="{{notice.identifier}}/text/">TXT</a></td></tr>
+	<tr><td>{{notice.name}}</td><td>{% if notice.html_template %}<a href="{{notice.identifier}}/">HTML</a> | {% endif %}<a href="{{notice.identifier}}/text/">TXT</a></td></tr>
 	{% empty %}
 		<tr><td colspan="2"><p>You have no notices setup yet.</p></td></tr>
 	{% endfor %}

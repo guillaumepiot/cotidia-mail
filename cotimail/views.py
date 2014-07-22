@@ -45,7 +45,8 @@ def preview(request, slug, text=False):
 			if obj.__name__.endswith('Notice') and hasattr(obj, 'identifier') and obj.__name__ != 'Notice':
 				notice = obj()
 				if notice.identifier == slug:
-					body_html = notice.get_body_html()
+					if notice.html_template:
+						body_html = notice.get_body_html()
 					body_txt = linebreaksbr(notice.get_body_txt())
 
 					# notice = obj(
