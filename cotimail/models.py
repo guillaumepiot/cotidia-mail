@@ -48,9 +48,10 @@ class EmailLog(models.Model):
 	class Meta:
 		verbose_name = u'Email log'
 		verbose_name_plural = u'Email logs'
+		ordering = ('-date_created',)
 
 	def send(self):
-		notice_obj = cPickle.loads(str(self.pickled_data).decode("base64"))
+		notice_obj = self.get_object()
 		send = notice_obj._process_and_send()
 		now = datetime.datetime.now()
 		if send:
@@ -68,3 +69,6 @@ class EmailLog(models.Model):
 
 	def get_recipients(self):
 		return self.recipients.split(',')
+
+	def get_object(self):
+		return cPickle.loads(str(self.pickled_data).decode("base64"))

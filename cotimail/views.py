@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from cotimail import settings as cotimail_settings
+from cotimail.models import EmailLog
 
 @login_required
 def list(request):
@@ -29,6 +30,25 @@ def list(request):
 	return render_to_response(template, {'notice_map':NOTICE_MAP},
 	context_instance=RequestContext(request))
 
+@login_required
+def logs(request):
+	
+	template = 'admin/cotimail/logs.html'
+
+	logs = EmailLog.objects.all()
+
+	return render_to_response(template, {'logs':logs},
+	context_instance=RequestContext(request))
+
+@login_required
+def log_context(request, log_id):
+	
+	template = 'admin/cotimail/log_context.html'
+
+	log = EmailLog.objects.get(id=log_id)
+
+	return render_to_response(template, {'log':log},
+	context_instance=RequestContext(request))
 
 @login_required
 def preview(request, slug, text=False):

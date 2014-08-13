@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Log context" %}{% endblock %}
+{% block content %}
+<h1 class="inner">{{log.get_object.get_subject}}</h1>
+{% with context=log.get_object.context %}
+<table class="table">
+{% for row, value in context.items %}
+	<tr><td>{{row}}</td><td>{{value}}</td></tr>
+{% endfor %}
+</table>
+{% endwith %}
+{% endblock %} 
+
