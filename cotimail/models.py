@@ -1,4 +1,4 @@
-import cPickle, datetime
+import pickle, datetime, base64
 
 from django.db import models 
 from django.utils.translation import ugettext_lazy as _ 
@@ -71,4 +71,4 @@ class EmailLog(models.Model):
 		return self.recipients.split(',')
 
 	def get_object(self):
-		return cPickle.loads(str(self.pickled_data).decode("base64"))
+		return pickle.loads(base64.b64decode(self.pickled_data))

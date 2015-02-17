@@ -1,4 +1,4 @@
-import json, cPickle
+import json, pickle, base64
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -122,7 +122,7 @@ class Notice(object):
 		self.log(status='QUEUED')
 
 	def log(self, status):
-		pickled_notice = cPickle.dumps(self).encode("base64")
+		pickled_notice = base64.b64encode(pickle.dumps(self))
 
 		email_log = EmailLog()
 		email_log.subject = self.get_subject()
