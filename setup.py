@@ -14,7 +14,7 @@ CLASSIFIERS = [
 ]
 
 install_requires = [
-    'djrill==0.4',
+    'djrill==1.3.0',
     'cssutils==0.9.10',
 ]
 
