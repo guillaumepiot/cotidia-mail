@@ -1,4 +1,5 @@
-import inspect, importlib
+import inspect, importlib, json
+
 
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
@@ -7,13 +8,32 @@ from django.template.defaultfilters import linebreaksbr
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+
 from cotimail import settings as cotimail_settings
 from cotimail.models import EmailLog
+from cotimail.forms import NoticeForm
+
+
+def _getNoticeClass(slug):
+	for app_module in cotimail_settings.COTIMAIL_APPS:
+		# Import module specify in the notification apps setting
+		module = importlib.import_module(app_module)
+
+		# Browse through all the classes in that module and pickup the one with an identifier attribute
+		for name, obj in inspect.getmembers(module, inspect.isclass):
+			# Get classes that ends with Notice and have an identifier attribute
+			if obj.__name__.endswith('Notice') and hasattr(obj, 'identifier') and obj.__name__ != 'Notice':
+				notice = obj()
+				if notice.identifier == slug:
+					return obj
+	raise Exception('Notice could not be found')
 
 @login_required
-def list(request):
+def notices_list(request):
 	
-	template = 'admin/cotimail/list.html'
+	template = 'admin/cotimail/notices_list.html'
 
 	NOTICE_MAP = []
 
@@ -28,27 +48,117 @@ def list(request):
 				NOTICE_MAP.append(obj())
 
 	return render_to_response(template, {'notice_map':NOTICE_MAP},
-	context_instance=RequestContext(request))
+		context_instance=RequestContext(request))
 
-@login_required
-def logs(request):
-	
-	template = 'admin/cotimail/logs.html'
-
-	logs = EmailLog.objects.all()
-
-	return render_to_response(template, {'logs':logs},
-	context_instance=RequestContext(request))
 
 @login_required
 def log_context(request, log_id):
 	
 	template = 'admin/cotimail/log_context.html'
 
-	log = EmailLog.objects.get(id=log_id)
+	log = EmailLog.objects.get(id = log_id)
 
 	return render_to_response(template, {'log':log},
-	context_instance=RequestContext(request))
+		context_instance=RequestContext(request))
+
+
+def cotimail_logs(request):
+
+	logs = EmailLog.objects.all()
+
+	template = 'admin/cotimail/cotimail_logs.html'
+
+	return render_to_response(template, {'logs': logs},
+		context_instance=RequestContext(request))
+
+
+
+@login_required
+def new_email(request, slug):
+	if request.method == "POST":
+		form = NoticeForm(request.POST)
+		if form.is_valid():
+			noticeClass = _getNoticeClass(slug)
+			clean = form.cleaned_data
+			# Initiate the notice with necessary variables
+			notice = noticeClass(
+				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
+				# A list of recipients emails
+				recipients = [clean['email']],
+				first_name = clean['first_name'],
+				last_name = clean['last_name'],
+				context = clean,
+				notice = noticeClass,
+			)
+
+			# Send the notice straight away
+			log_id = notice.save()
+			return HttpResponseRedirect(reverse('email_preview', args=(log_id,)))
+	else:
+		form = NoticeForm()
+
+	template = 'admin/cotimail/new_email.html'
+
+	return render_to_response(template, {'form':form},
+		context_instance=RequestContext(request))
+
+@login_required
+def edit_email(request, slug):
+
+	log = EmailLog.objects.get(id = slug)
+
+	context = log.get_context_dict()
+
+	print(context)
+	
+
+	##coger esta notice y modificarle los campos que se cambien(todos)
+	# Revisar la parte de forms de django de las views
+	# Cambiar en la url
+	# Cambiar en la template que dirige a esta funcion
+	# commit changes
+
+	if request.method == "POST":
+		form = NoticeForm(request.POST)
+		if form.is_valid():
+			
+			clean = form.cleaned_data
+
+			context['email'] = [clean['email']]
+			context['first_name'] = clean['first_name']
+			context['last_name'] = clean['last_name']
+			context['body'] = clean['body']
+			
+			print(context)
+
+			return HttpResponseRedirect(reverse('email_preview', args=(log.id,)))
+	else:
+		form = NoticeForm(initial=context)
+
+
+	template = 'admin/cotimail/new_email.html'
+
+	return render_to_response(template, {'form':form},
+		context_instance=RequestContext(request))
+
+
+def email_preview(request, id):
+
+	log = EmailLog.objects.get(id = id)
+# send
+	notice = log.get_object()
+
+	context = notice.context
+
+	body_html = notice.get_body_html()
+	body_txt = linebreaksbr(notice.get_body_txt())
+
+
+	template = 'admin/cotimail/email_preview.html'
+
+	return render_to_response(template, {'log': log, 'body_html' : body_html, 'context' : context},
+		context_instance=RequestContext(request))
+
 
 @login_required
 def preview(request, slug, text=False):
@@ -80,4 +190,4 @@ def preview(request, slug, text=False):
 
 
 	return render_to_response(template, {'body_html':body_html, 'body_txt':body_txt, 'text':text },
-	context_instance=RequestContext(request))
+		context_instance=RequestContext(request))

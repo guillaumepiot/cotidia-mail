@@ -13,6 +13,7 @@ COTIMAIL_SENDER = getattr(settings, 'COTIMAIL_SENDER', 'App <no-reply@example.co
 #     'booking.notices',
 # ]
 
+
 COTIMAIL_APPS = getattr(settings, 'COTIMAIL_APPS', [])
 
 COTIMAIL_INLINE_CSS_LOCAL = getattr(settings, 'COTIMAIL_INLINE_CSS_LOCAL', False)

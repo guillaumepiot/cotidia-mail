@@ -41,6 +41,11 @@ class Notice(object):
 	default_context = {}
 	context = {}
 
+	first_name = ''
+	last_name = ''
+
+	notice = ''
+	
 	#Hook the notice to an object
 	content_object = False
 
@@ -79,21 +84,33 @@ class Notice(object):
 	def get_identifier(self):
 		return u"%s" % self.identifier
 
-	def get_context(self, context=False):
+# get context dict
+	def get_context_dict(self, context=False):
 		if context:
 			the_context = self.default_context
 			the_context.update(context)
-			return Context(the_context)
+			return the_context
 		else:
 			the_context = self.default_context
 			the_context.update(self.context)
-			return Context(the_context)
+			return the_context
+
+# get context json
+	def get_context_json(self):
+		return json.dumps(self.get_context_dict())
+
+	def get_context(self, context=False):
+		if context:
+			return Context(self.get_context_dict(context))
+		else:
+			return Context(self.get_context_dict())
 
 	def get_body_html(self, context=False):
 		if context:
 			email_context = self.get_context(context)
 		else:
 			email_context = self.get_context()
+		
 		body_html = render_to_string(self.html_template, self.body_vars, email_context)
 		if cotimail_settings.COTIMAIL_INLINE_CSS_LOCAL:
 			body_html = inline_css(body_html)
@@ -121,6 +138,10 @@ class Notice(object):
 	def queue(self):
 		self.log(status='QUEUED')
 
+	def save(self):
+		log = self.log(status='SAVED')
+		return log.id
+
 	def log(self, status):
 		pickled_notice = base64.b64encode(pickle.dumps(self))
 
@@ -133,11 +154,17 @@ class Notice(object):
 		email_log.sender = self.sender
 		email_log.reply_to = self.reply_to
 		email_log.status = status
+		email_log.context_json = self.get_context_json()
+		email_log.notice = self.notice
+		email_log.first_name = self.first_name
+		email_log.last_name = self.last_name
 		if status == 'SENT':
 			email_log.date_sent = now()
 		if self.content_object:
 			email_log.content_object = self.content_object
 		email_log.save()
+
+		return email_log
 
 
 	def _process_and_send(self):

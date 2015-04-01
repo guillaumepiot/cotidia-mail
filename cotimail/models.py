@@ -1,4 +1,4 @@
-import pickle, datetime, base64
+import pickle, datetime, base64, json
 
 from django.db import models 
 from django.utils.translation import ugettext_lazy as _ 
@@ -9,7 +9,16 @@ EMAIL_LOG_STATUS = (
 	('QUEUED', 'Queued'),
 	('SENT', 'Sent'),
 	('FAILED', 'Failed'),
+	('SAVED', 'Saved'),
 )
+
+TITLE_CHOICES = (
+    ('MR', 'Mr.'),
+    ('MRS', 'Mrs.'),
+    ('MS', 'Ms.'),
+)
+
+
 
 class EmailLog(models.Model):
 
@@ -19,10 +28,19 @@ class EmailLog(models.Model):
 	# Pickled notice
 	pickled_data = models.TextField()
 
+	notice = models.CharField(max_length=250, null=True)
+
+	title = models.CharField(max_length=3, choices=TITLE_CHOICES, null = True)
+	first_name = models.CharField(max_length=250, null = True)
+	last_name = models.CharField(max_length=3, null = True)
+
 	# Representation name of email
 	name = models.CharField(max_length=250)
 	identifier = models.CharField(max_length=250)
 	status = models.CharField(choices=EMAIL_LOG_STATUS, max_length=10)
+
+	# Context
+	context_json = models.TextField(null=True)
 
 	# The communication details
 	recipients = models.TextField(help_text='A comma separated list of recipients')
@@ -72,3 +90,9 @@ class EmailLog(models.Model):
 
 	def get_object(self):
 		return pickle.loads(base64.b64decode(self.pickled_data))
+
+	def get_context_dict(self):
+		return json.loads(self.context_json)
+
+
+
