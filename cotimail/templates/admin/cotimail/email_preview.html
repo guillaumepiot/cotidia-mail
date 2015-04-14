@@ -17,12 +17,12 @@
 		{{ body_html }}
 	</p>
 	{% if log.status == 'SAVED' %}
-		<a href="{% url 'edit_email' log.id %}">Edit</a>
-		<a href="{% url 'cotimail_logs' %}">Go to logs</a>
-		<!-- <a href="{% url 'email_preview' log.id %}">Save</a> -->
-		<a href="{% url 'email_sent' log.id %}">Send</a>
+		<a href="{% url 'cotimail:edit_email' log.id %}">Edit</a>
+		<a href="{% url 'cotimail:logs' %}">Go to logs</a>
+		<!-- <a href="{% url 'cotimail:email_preview' log.id %}">Save</a> -->
+		<a href="{% url 'cotimail:email_sent' log.id %}">Send</a>
 	{% elif log.status == 'SENT' %}
-		<a href="{% url 'cotimail_logs' %}">Back</a>
+		<a href="{% url 'cotimail:logs' %}">Back</a>
 	{% endif %}
 
 

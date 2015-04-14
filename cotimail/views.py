@@ -21,6 +21,8 @@ def _getNoticeClass(slug):
 		# Import module specify in the notification apps setting
 		module = importlib.import_module(app_module)
 
+		print(module)
+
 		# Browse through all the classes in that module and pickup the one with an identifier attribute
 		for name, obj in inspect.getmembers(module, inspect.isclass):
 			# Get classes that ends with Notice and have an identifier attribute
@@ -46,6 +48,9 @@ def notices_list(request):
 			# Get classes that ends with Notice and have an identifier attribute
 			if obj.__name__.endswith('Notice') and hasattr(obj, 'identifier') and obj.__name__ != 'Notice':
 				NOTICE_MAP.append(obj())
+			print (name)
+
+
 
 	return render_to_response(template, {'notice_map':NOTICE_MAP},
 		context_instance=RequestContext(request))
@@ -77,7 +82,7 @@ def cotimail_logs(request):
 def new_email(request, slug):
 
 	noticeClass = _getNoticeClass(slug)
-
+	print(noticeClass.context)
 	if request.method == "POST":
 		form = NoticeForm(data=request.POST, json_fields=noticeClass.context_editable)
 		if form.is_valid():
@@ -99,7 +104,7 @@ def new_email(request, slug):
 
 			# Send the notice straight away
 			log_id = notice.save()
-			return HttpResponseRedirect(reverse('email_preview', args=(log_id,)))
+			return HttpResponseRedirect(reverse('cotimail:email_preview', args=(log_id,)))
 	else:
 		form = NoticeForm(json_fields=noticeClass.context_editable)
 
@@ -126,7 +131,7 @@ def edit_email(request, id):
 
 			log.save()
 
-			return HttpResponseRedirect(reverse('email_preview', args=(log.id,)))
+			return HttpResponseRedirect(reverse('cotimail:email_preview', args=(log.id,)))
 	else:
 		form = NoticeForm(initial=notice.context, json_fields=notice.context_editable)
 
@@ -162,7 +167,7 @@ def email_sent(request, id):
 
 	log.send()
 
-	return HttpResponseRedirect(reverse('cotimail_logs'))
+	return HttpResponseRedirect(reverse('cotimail:logs'))
 
 
 @login_required
