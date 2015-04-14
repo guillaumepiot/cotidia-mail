@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}{% load i18n %}
+{% block title %}Notifications{% endblock %}
+{% block content_title %}<div class="inner"><h1>New email</h1></div>{% endblock %}
+{% block content %}
+<div id="content-main">
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <div>
+        {% if form.errors %}
+          <div class="inner">
+            <p class="alert alert-danger">
+            {% blocktrans count counter=form.errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+            </p>
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+          <div class="inner">
+            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+            {% for fieldset in form.fieldsets %}
+                <fieldset class="{{ fieldset.classes }}">
+                    {% if fieldset.legend %}
+                        <h2>{{ fieldset.legend }}</h2>
+                    {% endif %}
+                    {% if fieldset.description %}
+                        <p class="description">{{ fieldset.description }}</p>
+                    {% endif %}
+                    {% for field in fieldset %}
+                        {% if field.is_hidden %}
+                            <div class="form-row">{{ field }}</div>
+                        {% else %}
+                            {% include 'admin/includes/field_standard.html' %}
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+          </div>
+
+          <div class="form-actions">
+            <div class="row">
+              <div class="col-md-12">
+                <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+                <a class="btn btn-default" href="{% url 'notices_list' %}">{% trans "Cancel" %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+{% endblock %} 
+

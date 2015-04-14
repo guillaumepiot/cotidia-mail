@@ -89,7 +89,6 @@ class EmailLog(models.Model):
 				recipients = self.get_recipients(),
 				context = context,
 			)
-		print(notice.sender,notice.recipients)
 		return notice
 
 	# def get_object(self, slug):

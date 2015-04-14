@@ -33,7 +33,7 @@ def _getNoticeClass(slug):
 @login_required
 def notices_list(request):
 	
-	template = 'admin/cotimail/notices_list.html'
+	template = 'admin/cotimail/list.html'
 
 	NOTICE_MAP = []
 
@@ -75,11 +75,19 @@ def cotimail_logs(request):
 
 @login_required
 def new_email(request, slug):
+
+	noticeClass = _getNoticeClass(slug)
+
 	if request.method == "POST":
-		form = NoticeForm(request.POST)
+		form = NoticeForm(data=request.POST, json_fields=noticeClass.context_editable)
 		if form.is_valid():
-			noticeClass = _getNoticeClass(slug)
+			
 			clean = form.cleaned_data
+
+			if not clean.get('email'):
+				raise Exception('You must have an email field')
+
+
 			# Initiate the notice with necessary variables
 			notice = noticeClass(
 				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
@@ -93,9 +101,9 @@ def new_email(request, slug):
 			log_id = notice.save()
 			return HttpResponseRedirect(reverse('email_preview', args=(log_id,)))
 	else:
-		form = NoticeForm()
+		form = NoticeForm(json_fields=noticeClass.context_editable)
 
-	template = 'admin/cotimail/new_email.html'
+	template = 'admin/cotimail/email_form.html'
 
 	return render_to_response(template, {'form':form},
 		context_instance=RequestContext(request))
@@ -107,8 +115,9 @@ def edit_email(request, id):
 	notice = log.get_object()
 
 
+
 	if request.method == "POST":
-		form = NoticeForm(request.POST)
+		form = NoticeForm(data=request.POST, json_fields=notice.context_editable)
 		if form.is_valid():
 			clean = form.cleaned_data
 
@@ -119,9 +128,9 @@ def edit_email(request, id):
 
 			return HttpResponseRedirect(reverse('email_preview', args=(log.id,)))
 	else:
-		form = NoticeForm(initial=notice.context)
+		form = NoticeForm(initial=notice.context, json_fields=notice.context_editable)
 
-	template = 'admin/cotimail/new_email.html'
+	template = 'admin/cotimail/email_form.html'
 
 	return render_to_response(template, {'form':form},
 		context_instance=RequestContext(request))

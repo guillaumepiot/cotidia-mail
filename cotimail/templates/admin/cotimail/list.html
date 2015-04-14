@@ -1,13 +1,13 @@
 {% extends "admin/base_site.html" %}
 {% block title %}Notifications{% endblock %}
 {% block content %}
+<a href="{% url 'cotimail_logs' %}">Logs</a>
 <table class="table">
-	<tr><th>Notice</th><th>Preview</th></tr>
+	<tr><th>Notice</th><th>Preview</th><th>Actions</th></tr>
 	{% for notice in notice_map %}
-	<tr><td>{{notice.name}}</td><td>{% if notice.html_template %}<a href="{{notice.identifier}}/">HTML</a> | {% endif %}<a href="{{notice.identifier}}/text/">TXT</a></td></tr>
+	<tr><td>{{notice.name}}</td><td>{% if notice.html_template %}<a href="{{notice.identifier}}/">HTML</a> | {% endif %}<a href="{{notice.identifier}}/text/">TXT</a></td><td><a href="{% url 'new_email' notice.identifier %}">New</a></td></tr>
 	{% empty %}
 		<tr><td colspan="2"><p>You have no notices setup yet.</p></td></tr>
 	{% endfor %}
 </table>
 {% endblock %} 
-
