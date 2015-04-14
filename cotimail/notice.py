@@ -126,38 +126,39 @@ class Notice(object):
 	def get_subject(self):
 		return self.subject
 
-	def send(self, force_now=False):
+	def send(self, force_now=False, log_id = None):
 
 		if force_now or not cotimail_settings.COTIMAIL_QUEUE_MAIL:
 			self._process_and_send()
 			if cotimail_settings.COTIMAIL_LOG_MAIL:
-				self.log(status='SENT')
+				self.log(status='SENT', log_id = log_id)
 		else:
-			self.log(status='QUEUED')
+			self.log(status='QUEUED', log_id = log_id)
 
-	def queue(self):
-		self.log(status='QUEUED')
+	def queue(self, log_id = None):
+		self.log(status='QUEUED', log_id = log_id)
 
-	def save(self):
-		log = self.log(status='SAVED')
+	def save(self, log_id = None):
+		log = self.log(status='SAVED', log_id = log_id)
 		return log.id
 
-	def log(self, status):
+	def log(self, status, log_id = None):
 		pickled_notice = base64.b64encode(pickle.dumps(self))
+		if log_id:
+			email_log = EmailLog.object.get(id=log_id)
+		else:
+			email_log = EmailLog()
 
-		email_log = EmailLog()
 		email_log.subject = self.get_subject()
 		email_log.pickled_data = pickled_notice
 		email_log.name = self.name
 		email_log.identifier = self.identifier
-		email_log.recipients = ", ".join(self.recipients)
+		email_log.recipients = json.dumps(self.recipients)
 		email_log.sender = self.sender
 		email_log.reply_to = self.reply_to
 		email_log.status = status
 		email_log.context_json = self.get_context_json()
 		email_log.notice = self.notice
-		email_log.first_name = self.first_name
-		email_log.last_name = self.last_name
 		if status == 'SENT':
 			email_log.date_sent = now()
 		if self.content_object:

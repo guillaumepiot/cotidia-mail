@@ -12,14 +12,6 @@ EMAIL_LOG_STATUS = (
 	('SAVED', 'Saved'),
 )
 
-TITLE_CHOICES = (
-    ('MR', 'Mr.'),
-    ('MRS', 'Mrs.'),
-    ('MS', 'Ms.'),
-)
-
-
-
 class EmailLog(models.Model):
 
 	# The complete subject
@@ -29,10 +21,6 @@ class EmailLog(models.Model):
 	pickled_data = models.TextField()
 
 	notice = models.CharField(max_length=250, null=True)
-
-	title = models.CharField(max_length=3, choices=TITLE_CHOICES, null = True)
-	first_name = models.CharField(max_length=250, null = True)
-	last_name = models.CharField(max_length=3, null = True)
 
 	# Representation name of email
 	name = models.CharField(max_length=250)
@@ -86,13 +74,31 @@ class EmailLog(models.Model):
 			return False
 
 	def get_recipients(self):
-		return self.recipients.split(',')
+		recipients = json.loads(self.recipients)
+		return recipients
 
 	def get_object(self):
-		return pickle.loads(base64.b64decode(self.pickled_data))
+		from .views import _getNoticeClass
+		context = self.get_context_dict()
+
+		noticeClass = _getNoticeClass(self.notice)
+
+		notice = noticeClass(
+				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
+				# A list of recipients emails
+				recipients = self.get_recipients(),
+				context = context,
+			)
+		print(notice.sender,notice.recipients)
+		return notice
+
+	# def get_object(self, slug):
+	# 	return pickle.loads(base64.b64decode(self.pickled_data))
 
 	def get_context_dict(self):
 		return json.loads(self.context_json)
+
+
 
 
 

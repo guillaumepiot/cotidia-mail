@@ -16,10 +16,14 @@
 	<p>
 		{{ body_html }}
 	</p>
-
-	<a href="{% url 'edit_email' log.id %}">{{ context }}</a>
-	<a href="{% url 'email_preview' log.id %}">Save</a>
-	<a href="{% url 'email_preview' log.id %}">Send</a>
+	{% if log.status == 'SAVED' %}
+		<a href="{% url 'edit_email' log.id %}">Edit</a>
+		<a href="{% url 'cotimail_logs' %}">Go to logs</a>
+		<!-- <a href="{% url 'email_preview' log.id %}">Save</a> -->
+		<a href="{% url 'email_sent' log.id %}">Send</a>
+	{% elif log.status == 'SENT' %}
+		<a href="{% url 'cotimail_logs' %}">Back</a>
+	{% endif %}
 
 
 

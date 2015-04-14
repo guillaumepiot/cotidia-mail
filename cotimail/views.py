@@ -84,11 +84,9 @@ def new_email(request, slug):
 			notice = noticeClass(
 				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
 				# A list of recipients emails
-				recipients = [clean['email']],
-				first_name = clean['first_name'],
-				last_name = clean['last_name'],
+				recipients = clean['email'].split(','),
+				notice = slug,
 				context = clean,
-				notice = noticeClass,
 			)
 
 			# Send the notice straight away
@@ -103,38 +101,25 @@ def new_email(request, slug):
 		context_instance=RequestContext(request))
 
 @login_required
-def edit_email(request, slug):
+def edit_email(request, id):
 
-	log = EmailLog.objects.get(id = slug)
+	log = EmailLog.objects.get(id = id)
+	notice = log.get_object()
 
-	context = log.get_context_dict()
-
-	print(context)
-	
-
-	##coger esta notice y modificarle los campos que se cambien(todos)
-	# Revisar la parte de forms de django de las views
-	# Cambiar en la url
-	# Cambiar en la template que dirige a esta funcion
-	# commit changes
 
 	if request.method == "POST":
 		form = NoticeForm(request.POST)
 		if form.is_valid():
-			
 			clean = form.cleaned_data
 
-			context['email'] = [clean['email']]
-			context['first_name'] = clean['first_name']
-			context['last_name'] = clean['last_name']
-			context['body'] = clean['body']
-			
-			print(context)
+			log.recipients = json.dumps(clean['email'].split(','))
+			log.context_json = json.dumps(clean)
+
+			log.save()
 
 			return HttpResponseRedirect(reverse('email_preview', args=(log.id,)))
 	else:
-		form = NoticeForm(initial=context)
-
+		form = NoticeForm(initial=notice.context)
 
 	template = 'admin/cotimail/new_email.html'
 
@@ -145,7 +130,7 @@ def edit_email(request, slug):
 def email_preview(request, id):
 
 	log = EmailLog.objects.get(id = id)
-# send
+
 	notice = log.get_object()
 
 	context = notice.context
@@ -156,8 +141,19 @@ def email_preview(request, id):
 
 	template = 'admin/cotimail/email_preview.html'
 
-	return render_to_response(template, {'log': log, 'body_html' : body_html, 'context' : context},
+	return render_to_response(template, {'log': log, 'body_html' : body_html},
 		context_instance=RequestContext(request))
+
+
+def email_sent(request, id):
+
+	log = EmailLog.objects.get(id = id)
+
+	notice = log.get_object()
+
+	log.send()
+
+	return HttpResponseRedirect(reverse('cotimail_logs'))
 
 
 @login_required

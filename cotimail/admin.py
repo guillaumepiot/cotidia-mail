@@ -3,7 +3,6 @@ from django.forms import forms
 
 from .models import *
 from .notice import *
-from codemirror import CodeMirrorTextarea
 
 class emailAdmin(admin.ModelAdmin):
 	date_hierarchy = 'date_created'
