@@ -77,7 +77,7 @@ You can access the notice logs and send notice emails from the admin. To do so, 
 Add the following rule to your urls.py:
 
 	# Notices URL should be before the default admin ones
-	url(r'^admin/notices/', include('cotimail.urls')),
+	url(r'^admin/notices/', include('cotimail.urls', namespace='cotimail')),
 	url(r'^admin/', include(admin.site.urls)),
 
 If you are using Admin Tools, add a menu item for the admin
