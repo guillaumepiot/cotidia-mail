@@ -16,6 +16,7 @@ CLASSIFIERS = [
 install_requires = [
     'djrill==1.3.0',
     'cssutils==0.9.10',
+    'django-form-utils==1.0.1'
 ]
 
 # taken from django-registration

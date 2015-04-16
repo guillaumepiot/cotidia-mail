@@ -1,4 +1,4 @@
-import pickle, datetime, base64
+import pickle, datetime, base64, json
 
 import django
 
@@ -23,6 +23,7 @@ EMAIL_LOG_STATUS = (
 	('QUEUED', 'Queued'),
 	('SENT', 'Sent'),
 	('FAILED', 'Failed'),
+	('SAVED', 'Saved'),
 )
 
 class EmailLog(models.Model):
@@ -33,10 +34,15 @@ class EmailLog(models.Model):
 	# Pickled notice
 	pickled_data = models.TextField()
 
+	notice = models.CharField(max_length=250, null=True)
+
 	# Representation name of email
 	name = models.CharField(max_length=250)
 	identifier = models.CharField(max_length=250)
 	status = models.CharField(choices=EMAIL_LOG_STATUS, max_length=10)
+
+	# Context
+	context_json = models.TextField(null=True)
 
 	# The communication details
 	recipients = models.TextField(help_text='A comma separated list of recipients')
@@ -82,7 +88,30 @@ class EmailLog(models.Model):
 			return False
 
 	def get_recipients(self):
-		return self.recipients.split(',')
+		recipients = json.loads(self.recipients)
+		return recipients
 
 	def get_object(self):
-		return pickle.loads(base64.b64decode(self.pickled_data))
+		from .views import _getNoticeClass
+		context = self.get_context_dict()
+
+		noticeClass = _getNoticeClass(self.notice)
+
+		notice = noticeClass(
+				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
+				# A list of recipients emails
+				recipients = self.get_recipients(),
+				context = context,
+			)
+		return notice
+
+	# def get_object(self, slug):
+	# 	return pickle.loads(base64.b64decode(self.pickled_data))
+
+	def get_context_dict(self):
+		return json.loads(self.context_json)
+
+
+
+
+

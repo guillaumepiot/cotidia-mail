@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}{% trans "Notification logs" %}{% endblock %}
+{% block content %}
+<table class="table">
+	<tr><th>{% trans "Type" %}</th><th>{% trans "Context" %}</th><th>{% trans "Sent" %}</th><th>{% trans "Status" %}</th><th>{% trans "Actions" %}</th></tr>
+	{% for log in logs %}
+	<tr><td>{{log.name}}</td><td><a href="{% url 'cotimail:log_context' log.id %}">{% trans "View context" %}</a></td><td>{{log.date_sent}}</td><td>{{log.status}}</td>
+		<td><a href="{% url 'cotimail:email_preview' log.id %}">Preview</a></td></tr>
+	{% empty %}
+		<tr><td colspan="2"><p>{% trans "No logs." %}</p></td></tr>
+	{% endfor %}
+</table>
+{% endblock %} 
+

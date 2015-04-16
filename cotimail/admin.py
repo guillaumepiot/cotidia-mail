@@ -1,7 +1,16 @@
 from django.contrib import admin
-from django import forms
+from django.forms import forms
 
 from .models import *
+from .notice import *
+
+class emailAdmin(admin.ModelAdmin):
+	date_hierarchy = 'date_created'
+	list_display = ['subject','name','status']
+	list_display_links = ['subject']
+	list_editable = ['status']
+	list_filter = ['subject','name','status']
+	search_fields = ['title', 'content']
 
 # class EmailTemplateAdminForm(forms.ModelForm):
 # 	html_template_code = forms.CharField(widget=CodeMirrorTextarea(mode="xml", theme="cobalt", config={ 'fixedGutter': True, 'htmlMode':True }))
@@ -37,3 +46,8 @@ from .models import *
 
 # admin.site.register(EmailTemplate, EmailTemplateAdmin)
 # admin.site.register(Notice, NoticeAdmin)
+
+admin.site.register(EmailLog, emailAdmin)
+
+
+
