@@ -1,9 +1,23 @@
 import pickle, datetime, base64
 
+import django
+
+from distutils.version import StrictVersion
 from django.db import models 
 from django.utils.translation import ugettext_lazy as _ 
-from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+
+
+####################################################
+# Support for older versions of django             #
+# GenericForeignKey moved from .generic to .fields #
+####################################################
+
+if StrictVersion(django.get_version()) >= StrictVersion('1.8'):
+	from django.contrib.contenttypes.fields import GenericForeignKey
+else:
+	from django.contrib.contenttypes.generic import GenericForeignKey
+
 
 EMAIL_LOG_STATUS = (
 	('QUEUED', 'Queued'),
@@ -35,7 +49,7 @@ class EmailLog(models.Model):
 			verbose_name=_('content type'),
 			related_name="content_type_set_for_%(class)s", blank=True, null=True)
 	object_pk = models.TextField(_('object ID'), blank=True, null=True)
-	content_object = generic.GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+	content_object = GenericForeignKey(ct_field="content_type", fk_field="object_pk")
 
 	# Datetime stamp
 	date_created = models.DateTimeField(auto_now_add=True)
