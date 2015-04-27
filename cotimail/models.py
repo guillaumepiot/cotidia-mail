@@ -74,8 +74,11 @@ class EmailLog(models.Model):
 			return False
 
 	def get_recipients(self):
-		recipients = json.loads(self.recipients)
-		return recipients
+		if self.recipients:
+			recipients = json.loads(self.recipients)
+			return recipients
+		else:
+			return []
 
 	def get_object(self):
 		from .views import _getNoticeClass

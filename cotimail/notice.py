@@ -116,6 +116,7 @@ class Notice(object):
 
 # get context json
     def get_context_json(self):
+        print self.get_context_dict()
         return json.dumps(self.get_context_dict())
 
     def get_context(self, context=False):
