@@ -89,7 +89,10 @@ class EmailLog(models.Model):
 
 	def get_recipients(self):
 		if self.recipients:
-			recipients = json.loads(self.recipients)
+			try:
+				recipients = json.loads(self.recipients)
+			except:
+				recipients = self.recipients.split(',')
 			return recipients
 		else:
 			return []
