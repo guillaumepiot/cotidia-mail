@@ -33,7 +33,7 @@ def _getNoticeClass(slug):
 	raise Exception('Notice could not be found')
 
 @login_required
-def notices_list(request):
+def list(request):
 	
 	template = 'admin/cotimail/list.html'
 
@@ -48,9 +48,6 @@ def notices_list(request):
 			# Get classes that ends with Notice and have an identifier attribute
 			if obj.__name__.endswith('Notice') and hasattr(obj, 'identifier') and obj.__name__ != 'Notice':
 				NOTICE_MAP.append(obj())
-			print (name)
-
-
 
 	return render_to_response(template, {'notice_map':NOTICE_MAP},
 		context_instance=RequestContext(request))
@@ -66,12 +63,12 @@ def log_context(request, log_id):
 	return render_to_response(template, {'log':log},
 		context_instance=RequestContext(request))
 
-
-def cotimail_logs(request):
+@login_required
+def logs(request):
 
 	logs = EmailLog.objects.all()
 
-	template = 'admin/cotimail/cotimail_logs.html'
+	template = 'admin/cotimail/logs.html'
 
 	return render_to_response(template, {'logs': logs},
 		context_instance=RequestContext(request))
@@ -140,8 +137,24 @@ def edit_email(request, id):
 	return render_to_response(template, {'form':form},
 		context_instance=RequestContext(request))
 
-
+#
+# Load a page that will load an iframe with the email in preview
+#
+@login_required
 def email_preview(request, id):
+
+	log = EmailLog.objects.get(id = id)
+
+	template = 'admin/cotimail/email_preview.html'
+
+	return render_to_response(template, {'log': log},
+		context_instance=RequestContext(request))
+
+#
+# View to return a the rendered email only, to be used for the iframe preview
+#
+@login_required
+def email_preview_standalone(request, id):
 
 	log = EmailLog.objects.get(id = id)
 
@@ -153,12 +166,13 @@ def email_preview(request, id):
 	body_txt = linebreaksbr(notice.get_body_txt())
 
 
-	template = 'admin/cotimail/email_preview.html'
+	template = 'admin/cotimail/email_preview_standalone.html'
 
 	return render_to_response(template, {'log': log, 'body_html' : body_html},
 		context_instance=RequestContext(request))
 
 
+@login_required
 def email_sent(request, id):
 
 	log = EmailLog.objects.get(id = id)
@@ -189,12 +203,6 @@ def preview(request, slug, text=False):
 						body_html = notice.get_body_html()
 					body_txt = linebreaksbr(notice.get_body_txt())
 
-					# notice = obj(
-					#     sender = 'App <info@app.com>',
-					#     recipients = ['Guillaume Piot <guillaume@cotidia.com>'],
-					#     context = {}
-					# )
-					# notice.send()
 	
 	template = 'admin/cotimail/preview.html'
 
