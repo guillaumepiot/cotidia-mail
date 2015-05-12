@@ -103,7 +103,7 @@ def new_email(request, slug):
 			log_id = notice.save()
 			return HttpResponseRedirect(reverse('cotimail:email_preview', args=(log_id,)))
 	else:
-		form = NoticeForm(json_fields=noticeClass.context_editable)
+		form = NoticeForm(initial=noticeClass.default_context,json_fields=noticeClass.context_editable)
 
 	template = 'admin/cotimail/email_form.html'
 
