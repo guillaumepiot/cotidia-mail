@@ -16,7 +16,6 @@ def inline_css(message):
         email_font = False
         for rule in sheet:
         
-            #print rule  
             if hasattr(rule, 'selectorText'):
                 if rule.selectorText == 'body':
                     for s in rule.style:

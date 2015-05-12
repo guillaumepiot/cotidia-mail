@@ -21,8 +21,6 @@ def _getNoticeClass(slug):
         # Import module specify in the notification apps setting
         module = importlib.import_module(app_module)
 
-        print(module)
-
         # Browse through all the classes in that module and pickup the one with an identifier attribute
         for name, obj in inspect.getmembers(module, inspect.isclass):
             # Get classes that ends with Notice and have an identifier attribute
@@ -155,7 +153,7 @@ def new_email(request, slug):
             log_id = notice.save()
             return HttpResponseRedirect(reverse('cotimail:email_preview', args=(log_id,)))
     else:
-        form = NoticeForm(json_fields=noticeClass.context_editable)
+        form = NoticeForm(initial=noticeClass.default_context, json_fields=noticeClass.context_editable)
 
     template = 'admin/cotimail/email_form.html'
 
