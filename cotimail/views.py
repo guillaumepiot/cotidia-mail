@@ -46,9 +46,8 @@ def _getNoticeNames():
     return NOTICE_NAMES
 
 @login_required
-def list(request):
+def list(request, template='admin/cotimail/list.html'):
     
-    template = 'admin/cotimail/list.html'
 
     NOTICE_MAP = []
 
@@ -69,9 +68,7 @@ def list(request):
 
 
 @login_required
-def log_context(request, log_id):
-    
-    template = 'admin/cotimail/log_context.html'
+def log_context(request, log_id, template='admin/cotimail/log_context.html'):
 
     log = EmailLog.objects.get(id = log_id)
 
@@ -100,7 +97,7 @@ class LogFilter(django_filters.FilterSet):
         fields = ['identifier', 'status']
 
 @login_required
-def logs(request):
+def logs(request, template='admin/cotimail/logs.html'):
 
     logs = EmailLog.objects.all()
 
@@ -118,7 +115,7 @@ def logs(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         logs = paginator.page(paginator.num_pages)
 
-    template = 'admin/cotimail/logs.html'
+    
 
     return render_to_response(template, {'logs': logs, 'filter': log_filter, 'logs': logs},
         context_instance=RequestContext(request))
@@ -126,7 +123,7 @@ def logs(request):
 
 
 @login_required
-def new_email(request, slug):
+def new_email(request, slug, template='admin/cotimail/email_form.html', redirect_url='cotimail:email_preview'):
 
     noticeClass = _getNoticeClass(slug)
 
@@ -151,17 +148,17 @@ def new_email(request, slug):
 
             # Send the notice straight away
             log_id = notice.save()
-            return HttpResponseRedirect(reverse('cotimail:email_preview', args=(log_id,)))
+            return HttpResponseRedirect(reverse(redirect_url, args=(log_id,)))
     else:
         form = NoticeForm(initial=noticeClass.default_context, json_fields=noticeClass.context_editable)
 
-    template = 'admin/cotimail/email_form.html'
+    
 
     return render_to_response(template, {'form':form},
         context_instance=RequestContext(request))
 
 @login_required
-def edit_email(request, id):
+def edit_email(request, id, template='admin/cotimail/email_form.html', redirect_url='cotimail:email_preview'):
 
     log = EmailLog.objects.get(id = id)
     notice = log.get_object()
@@ -178,11 +175,9 @@ def edit_email(request, id):
 
             log.save()
 
-            return HttpResponseRedirect(reverse('cotimail:email_preview', args=(log.id,)))
+            return HttpResponseRedirect(reverse(redirect_url, args=(log.id,)))
     else:
         form = NoticeForm(initial=notice.context, json_fields=notice.context_editable)
-
-    template = 'admin/cotimail/email_form.html'
 
     return render_to_response(template, {'form':form},
         context_instance=RequestContext(request))
@@ -191,11 +186,9 @@ def edit_email(request, id):
 # Load a page that will load an iframe with the email in preview
 #
 @login_required
-def email_preview(request, id):
+def email_preview(request, id, template='admin/cotimail/email_preview.html'):
 
     log = EmailLog.objects.get(id = id)
-
-    template = 'admin/cotimail/email_preview.html'
 
     return render_to_response(template, {'log': log},
         context_instance=RequestContext(request))
@@ -204,7 +197,7 @@ def email_preview(request, id):
 # View to return a the rendered email only, to be used for the iframe preview
 #
 @login_required
-def email_preview_standalone(request, id):
+def email_preview_standalone(request, id, template='admin/cotimail/email_preview_standalone.html'):
 
     log = EmailLog.objects.get(id = id)
 
@@ -216,14 +209,14 @@ def email_preview_standalone(request, id):
     body_txt = linebreaksbr(notice.get_body_txt())
 
 
-    template = 'admin/cotimail/email_preview_standalone.html'
+    
 
     return render_to_response(template, {'log': log, 'body_html' : body_html},
         context_instance=RequestContext(request))
 
 
 @login_required
-def email_sent(request, id):
+def email_sent(request, id, redirect_url='cotimail:logs'):
 
     log = EmailLog.objects.get(id = id)
 
@@ -231,11 +224,11 @@ def email_sent(request, id):
 
     log.send()
 
-    return HttpResponseRedirect(reverse('cotimail:logs'))
+    return HttpResponseRedirect(reverse(redirect_url))
 
 
 @login_required
-def preview(request, slug, text=False):
+def preview(request, slug, text=False, template='admin/cotimail/preview.html'):
 
     body_html = ""
 
@@ -254,7 +247,7 @@ def preview(request, slug, text=False):
                     body_txt = linebreaksbr(notice.get_body_txt())
 
     
-    template = 'admin/cotimail/preview.html'
+    
 
 
     return render_to_response(template, {'body_html':body_html, 'body_txt':body_txt, 'text':text },

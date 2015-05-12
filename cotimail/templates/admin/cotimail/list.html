@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-{% block title %}Notifications{% endblock %}
+{% block title %}Notice templates{% endblock %}
 {% block content_title %}
 <div class="inner">
     <h1>Notice templates</h1>
@@ -27,11 +27,13 @@
                 <a href="{% url 'cotimail:template_preview_text' notice.identifier 'text' %}">TXT</a>
             </td>
             <td>
-                <a href="{% url 'cotimail:new_email' notice.identifier %}">New</a>
+                <a href="{% url 'cotimail:new_email' notice.identifier %}">New email</a>
             </td>
         </tr>
         {% empty %}
-            <tr><td colspan="2"><p>You have no notices setup yet.</p></td></tr>
+            <tr>
+                <td colspan="3">You have no notices setup yet.</td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>
