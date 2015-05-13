@@ -141,8 +141,6 @@ def new_email(request, slug, template='admin/cotimail/email_form.html', redirect
 
             # Initiate the notice with necessary variables
             notice = noticeClass(
-                sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
-                # A list of recipients emails
                 recipients = clean['email'].split(','),
                 notice = slug,
                 context = clean,
