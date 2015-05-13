@@ -30,10 +30,10 @@ def _getNoticeClass(slug):
                     return obj
     raise Exception('Notice could not be found')
 
-def _getNoticeNames():
+def _getNoticeNames(apps=cotimail_settings.COTIMAIL_APPS):
     NOTICE_NAMES = []
 
-    for app_module in cotimail_settings.COTIMAIL_APPS:
+    for app_module in apps:
         # Import module specify in the notification apps setting
         module = importlib.import_module(app_module)
 
@@ -42,6 +42,8 @@ def _getNoticeNames():
             # Get classes that ends with Notice and have an identifier attribute
             if obj.__name__.endswith('Notice') and hasattr(obj, 'identifier') and obj.__name__ != 'Notice':
                 NOTICE_NAMES.append((obj.identifier, obj.name))
+
+    NOTICE_NAMES = sorted(NOTICE_NAMES, key=lambda obj: obj[1])
 
     return NOTICE_NAMES
 
