@@ -142,6 +142,16 @@ class Notice(object):
             email_context = self.get_context()
         return render_to_string(self.text_template, self.body_vars, email_context)
 
+    def get_body_pdf(self, context=False):
+        if context:
+            email_context = self.get_context(context)
+        else:
+            email_context = self.get_context()
+        
+        body_pdf = render_to_string(self.pdf_template, self.body_vars, email_context)
+
+        return body_pdf
+
     def get_subject(self):
         return self.subject
 
