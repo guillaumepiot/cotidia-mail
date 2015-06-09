@@ -111,9 +111,6 @@ class EmailLog(models.Model):
 			)
 		return notice
 
-	# def get_object(self, slug):
-	# 	return pickle.loads(base64.b64decode(self.pickled_data))
-
 	def get_context_dict(self):
 		return json.loads(self.context_json)
 
