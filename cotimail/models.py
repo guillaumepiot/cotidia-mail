@@ -104,7 +104,7 @@ class EmailLog(models.Model):
 		noticeClass = _getNoticeClass(self.notice)
 
 		notice = noticeClass(
-				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
+				sender = self.sender,
 				# A list of recipients emails
 				recipients = self.get_recipients(),
 				context = context,
