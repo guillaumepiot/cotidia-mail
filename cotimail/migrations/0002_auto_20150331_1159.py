@@ -11,9 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.DeleteModel(
-            name='EmailDraft',
-        ),
         migrations.AddField(
             model_name='emaillog',
             name='lastname',
