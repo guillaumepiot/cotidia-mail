@@ -1,18 +1,41 @@
 {% extends "admin/base_site.html" %}
-{% block title %}Notifications{% endblock %}
+{% block title %}Notice templates{% endblock %}
+{% block content_title %}
+<div class="inner">
+    <h1>Notice templates</h1>
+</div>
+<div class="object-tools btn-toolbar inner">
+    <div class="btn-group">
+        <a href="{% url 'cotimail:logs' %}" class="btn btn-primary pull-right">View email logs</a>
+    </div>
+</div>
+{% endblock %}
 {% block content %}
-<table class="table">
-	<tr><th>Notice</th><th>Preview</th><th>Actions</th></tr>
-	{% for notice in notice_map %}
-	<tr><td>{{notice.name}}</td><td>{% if notice.html_template %}<a href="/admin/{% if notice.context.booking %}booking{% else %}sales{% endif %}/{{notice.identifier}}/">HTML</a> | {% endif %}<a href="booking/{{notice.identifier}}/text/">TXT</a></td><td><a href="{% url 'cotimail:new_email' notice.identifier %}">New</a></td></tr>
-	{% empty %}
-		<tr><td colspan="2"><p>You have no notices setup yet.</p></td></tr>
-	{% endfor %}
-</table>
-
-<div class="row">
-	<div class="col-sm-12">
-		<a href="{% url 'cotimail:logs' %}" class="btn btn-default">Logs</a>
-	</div>
+<div id="content-main">
+    <table class="table">
+        <thead>
+        <tr><th>Notice</th><th>Preview</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for notice in notice_map %}
+        <tr>
+            <td>{{notice.name}}</td>
+            <td>
+                {% if notice.html_template %}
+                    <a href="{% url 'cotimail:template_preview_html' notice.identifier %}">HTML</a> | 
+                {% endif %}
+                <a href="{% url 'cotimail:template_preview_text' notice.identifier 'text' %}">TXT</a>
+            </td>
+            <td>
+                <a href="{% url 'cotimail:new_email' notice.identifier %}">New email</a>
+            </td>
+        </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">You have no notices setup yet.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %} 

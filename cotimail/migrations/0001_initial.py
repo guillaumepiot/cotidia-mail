@@ -7,33 +7,34 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0001_initial'),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='EmailLog',
             fields=[
-                ('id', models.AutoField(primary_key=True, auto_created=True, verbose_name='ID', serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('subject', models.TextField()),
                 ('pickled_data', models.TextField()),
+                ('notice', models.CharField(max_length=250, null=True)),
                 ('name', models.CharField(max_length=250)),
                 ('identifier', models.CharField(max_length=250)),
-                ('status', models.CharField(choices=[('QUEUED', 'Queued'), ('SENT', 'Sent'), ('FAILED', 'Failed'), ('SAVED', 'Saved')], max_length=10)),
-                ('recipients', models.TextField(help_text='A comma separated list of recipients')),
+                ('status', models.CharField(max_length=10, choices=[(b'QUEUED', b'Queued'), (b'SENT', b'Sent'), (b'FAILED', b'Failed'), (b'SAVED', b'Saved')])),
+                ('context_json', models.TextField(null=True)),
+                ('recipients', models.TextField(help_text=b'A comma separated list of recipients')),
                 ('sender', models.EmailField(max_length=250)),
-                ('reply_to', models.EmailField(max_length=75, blank=True)),
-                ('object_pk', models.TextField(blank=True, null=True, verbose_name='object ID')),
+                ('reply_to', models.EmailField(max_length=254, blank=True)),
+                ('object_pk', models.TextField(null=True, verbose_name='object ID', blank=True)),
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('date_updated', models.DateTimeField(auto_now=True)),
                 ('date_sent', models.DateTimeField(null=True, blank=True)),
-                ('content_type', models.ForeignKey(null=True, blank=True, verbose_name='content type', related_name='content_type_set_for_emaillog', to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(related_name='content_type_set_for_emaillog', verbose_name='content type', blank=True, to='contenttypes.ContentType', null=True)),
             ],
             options={
                 'ordering': ('-date_created',),
-                'verbose_name_plural': 'Email logs',
                 'verbose_name': 'Email log',
+                'verbose_name_plural': 'Email logs',
             },
-            bases=(models.Model,),
         ),
     ]

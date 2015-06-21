@@ -1,31 +1,35 @@
 {% extends "admin/base_site.html" %}
-{% block title %}Notifications{% endblock %}
+{% block title %}Email preview{% endblock %}
+{% block content_title %}
+<div class="object-tools btn-toolbar inner">
+    <div class="btn-group">
+        <a href="{% url 'cotimail:logs' %}" class="btn btn-default pull-right">Back to logs</a>
+    </div>
+</div>
+<div class="inner">
+    <h1>Email preview <span class="label label-default">{{log.status}}</span> <small>{{log.date_created}}</small></h1>
+    <div class="clearfix"></div>
+    <p>{{ log.name }}</p>
+</div>
+{% endblock %}
 {% block content %}
-
-
-	<h2>
-		Template : {{ log.name }}
-	</h2>
-	<h3>
-		{{log.date_created}}
-	</h3>
-	<h3>
-		{{log.status}}
-	</h3>
-
-	<p>
-		{{ body_html }}
-	</p>
-	{% if log.status == 'SAVED' %}
-		<a href="{% url 'cotimail:edit_email' log.id %}">Edit</a>
-		<a href="{% url 'cotimail:logs' %}">Go to logs</a>
-		<!-- <a href="{% url 'cotimail:email_preview' log.id %}">Save</a> -->
-		<a href="{% url 'cotimail:email_sent' log.id %}">Send</a>
-	{% elif log.status == 'SENT' %}
-		<a href="{% url 'cotimail:logs' %}">Back</a>
-	{% endif %}
-
-
-
-
+<div id="content-main">
+    <iframe src="{% url 'cotimail:email_preview_standalone' log.id %}" style="width: 100%; height: 600px; border: none;"></iframe>
+    <form>
+        <br>
+        <div class="form-actions">
+            <div class="row">
+                <div class="col-md-12">
+                    {% if log.status == 'SAVED' %}
+                        <a href="{% url 'cotimail:email_sent' log.id %}" class="btn btn-primary pull-right">Send</a>
+                        <a href="{% url 'cotimail:edit_email' log.id %}" class="btn btn-warning">Edit</a>
+                        <a href="{% url 'cotimail:logs' %}" class="btn btn-default">Cancel</a>
+                    {% elif log.status == 'SENT' %}
+                        <a href="{% url 'cotimail:logs' %}" class="btn btn-default">Back to logs</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock %} 

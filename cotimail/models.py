@@ -88,8 +88,14 @@ class EmailLog(models.Model):
 			return False
 
 	def get_recipients(self):
-		recipients = json.loads(self.recipients)
-		return recipients
+		if self.recipients:
+			try:
+				recipients = json.loads(self.recipients)
+			except:
+				recipients = self.recipients.split(',')
+			return recipients
+		else:
+			return []
 
 	def get_object(self):
 		from .views import _getNoticeClass
@@ -98,15 +104,12 @@ class EmailLog(models.Model):
 		noticeClass = _getNoticeClass(self.notice)
 
 		notice = noticeClass(
-				sender = '%s <%s>' % ('Guillaume Piot', 'guillaume@cotidia.com'),
+				sender = self.sender,
 				# A list of recipients emails
 				recipients = self.get_recipients(),
 				context = context,
 			)
 		return notice
-
-	# def get_object(self, slug):
-	# 	return pickle.loads(base64.b64decode(self.pickled_data))
 
 	def get_context_dict(self):
 		return json.loads(self.context_json)
