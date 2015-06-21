@@ -190,8 +190,6 @@ def email_preview(request, id, template='admin/cotimail/email_preview.html'):
 
     log = EmailLog.objects.get(id = id)
 
-    print log.get_object().get_subject()
-
     return render_to_response(template, {'log': log},
         context_instance=RequestContext(request))
 
@@ -209,9 +207,6 @@ def email_preview_standalone(request, id, template='admin/cotimail/email_preview
 
     body_html = notice.get_body_html()
     body_txt = linebreaksbr(notice.get_body_txt())
-
-
-    
 
     return render_to_response(template, {'log': log, 'body_html' : body_html},
         context_instance=RequestContext(request))
