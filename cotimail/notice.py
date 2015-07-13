@@ -103,7 +103,7 @@ class Notice(object):
     def get_identifier(self):
         return u"%s" % self.identifier
 
-# get context dict
+    # get context dict
     def get_context_dict(self, context=False):
         if context:
             the_context = self.default_context
@@ -114,7 +114,7 @@ class Notice(object):
             the_context.update(self.context)
             return the_context
 
-# get context json
+    # get context json
     def get_context_json(self):
         return json.dumps(self.get_context_dict())
 
@@ -123,6 +123,13 @@ class Notice(object):
             return Context(self.get_context_dict(context))
         else:
             return Context(self.get_context_dict())
+
+
+    def get_context_editable(self):
+        if hasattr(self, 'context_editable'):
+            return self.context_editable
+        else:
+            return {}
 
     def get_body_html(self, context=False):
         if context:

@@ -130,7 +130,7 @@ def new_email(request, slug, template='admin/cotimail/email_form.html', redirect
     noticeClass = _getNoticeClass(slug)
 
     if request.method == "POST":
-        form = NoticeForm(data=request.POST, json_fields=noticeClass.context_editable)
+        form = NoticeForm(data=request.POST, json_fields=noticeClass().get_context_editable())
         if form.is_valid():
             
             clean = form.cleaned_data
@@ -150,7 +150,8 @@ def new_email(request, slug, template='admin/cotimail/email_form.html', redirect
             log_id = notice.save()
             return HttpResponseRedirect(reverse(redirect_url, args=(log_id,)))
     else:
-        form = NoticeForm(initial=noticeClass.default_context, json_fields=noticeClass.context_editable)
+        notice = noticeClass()
+        form = NoticeForm(initial=noticeClass.default_context, json_fields=noticeClass().get_context_editable())
 
     
 
@@ -166,7 +167,7 @@ def edit_email(request, id, template='admin/cotimail/email_form.html', redirect_
 
 
     if request.method == "POST":
-        form = NoticeForm(data=request.POST, json_fields=notice.context_editable)
+        form = NoticeForm(data=request.POST, json_fields=notice.get_context_editable())
         if form.is_valid():
             clean = form.cleaned_data
 
@@ -177,7 +178,7 @@ def edit_email(request, id, template='admin/cotimail/email_form.html', redirect_
 
             return HttpResponseRedirect(reverse(redirect_url, args=(log.id,)))
     else:
-        form = NoticeForm(initial=notice.context, json_fields=notice.context_editable)
+        form = NoticeForm(initial=notice.context, json_fields=notice.get_context_editable())
 
     return render_to_response(template, {'form':form},
         context_instance=RequestContext(request))
