@@ -1,0 +1,34 @@
+{% if not line.fields|length_is:'1' and not field.is_readonly %}{{ field.errors }}{% endif %}
+<div class="form-row">
+    <div {% if not line.fields|length_is:'1' %} class="field-box{% if field.name %} field-{{ field.name }}{% endif %}{% if not field.is_readonly and field.errors %} errors{% endif %} {{field.css_classes}}"{% else %}class="{{field.css_classes}}"{% endif %}>
+        
+        {% if field.is_hidden %}
+            {{field}}
+        {% elif field.is_checkbox %}
+        <div class="form-group-checkbox">
+            <label class="checkbox">
+                {{ field }} {{ field.label_tag }}
+            </label>
+            {% if field.help_text %}
+                <p class="help-block">{{ field.help_text|safe }}</p>
+            {% endif %}
+        </div>
+        {% else %}
+            <div class="form-group">
+            <label for="{{ field.auto_id }}" class="">{{ field.label }}</label>
+            
+            <div class="control-group">
+                {% if field.is_readonly %}
+                    <p>{{ field.contents }}</p>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                    <p class="help-block">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+            
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -31,7 +31,7 @@ class Notice(object):
     identifier = 'notice'
     html_template = 'notice/default.html'
     text_template = 'notice/default.txt'
-    subject = u'%s' % _('Default subject')
+    subject = 'Default subject'
     body_vars = False
 
     sender = cotimail_settings.COTIMAIL_SENDER
