@@ -106,12 +106,12 @@ class Notice(object):
 # get context dict
     def get_context_dict(self, context=False):
         if context:
-            the_context = self.default_context
+            the_context = self.context
             the_context.update(context)
             return the_context
         else:
-            the_context = self.default_context
-            the_context.update(self.context)
+            the_context = self.context
+            the_context.update(self.default_context)
             return the_context
 
 # get context json
