@@ -1,6 +1,12 @@
 {% extends "admin/base_site.html" %}{% load i18n %}
 {% block title %}Notifications{% endblock %}
 {% block content_title %}<div class="inner"><h1>New email</h1></div>{% endblock %}
+{% block breadcrumbs %}
+<ol class="breadcrumb">
+  <li><a href="{% url 'admin:index' %}">Dashboard</a></li>
+  <li><a href="{% url 'cotimail:list' %}">Templates</a></li>
+</ol>
+{% endblock %}
 {% block content %}
 <div id="content-main">
 
