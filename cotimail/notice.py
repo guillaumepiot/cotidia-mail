@@ -110,8 +110,8 @@ class Notice(object):
             the_context.update(context)
             return the_context
         else:
-            the_context = self.context
-            the_context.update(self.default_context)
+            the_context = self.default_context.copy()
+            the_context.update(self.context)
             return the_context
 
     # get context json
