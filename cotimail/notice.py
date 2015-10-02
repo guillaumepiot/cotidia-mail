@@ -206,11 +206,16 @@ class Notice(object):
 
     def _process_and_send(self):
 
+        if cotimail_settings.RECIPIENTS_OVERRIDE:
+            recipients = cotimail_settings.RECIPIENTS_OVERRIDE
+        else:
+            recipients = self.recipients
+
         msg = EmailMultiAlternatives(
             subject=self.get_subject(),
             body=self.get_body_txt(),
             from_email=self.sender,
-            to=self.recipients,
+            to=recipients,
             headers=self.headers # optional extra headers
         )
         if self.html_template:

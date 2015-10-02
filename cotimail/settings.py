@@ -30,4 +30,10 @@ if COTIMAIL_QUEUE_MAIL == True:
 
 COTIMAIL_LOCK_WAIT_TIMEOUT = getattr(settings, 'COTIMAIL_LOCK_WAIT_TIMEOUT', -1)
 
+#
+# In specific scenario, like DEBUG mode, we may want to force all email to be
+# sent to a define list of recipients, for testing purpose.
+# Set the value as a Python list of emails to enable the behaviour
+#
+RECIPIENTS_OVERRIDE = getattr(settings, 'COTIMAIL_RECIPIENTS_OVERRIDE', False)
 	
