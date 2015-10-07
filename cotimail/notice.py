@@ -194,7 +194,6 @@ class Notice(object):
         email_log.reply_to = self.reply_to
         email_log.status = status
         email_log.context_json = self.get_context_json()
-        email_log.notice = self.notice
         if status == 'SENT':
             email_log.date_sent = now()
         if self.content_object:
