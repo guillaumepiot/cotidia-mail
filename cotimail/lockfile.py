@@ -52,11 +52,21 @@ from __future__ import division
 import sys
 import socket
 import os
-import thread
+
 import threading
 import time
 import errno
 import urllib
+
+try:
+    import thread
+except:
+    import _thread
+
+try:
+    from urllib.parse import quote as urlquote
+except:
+    from urllib import quote as urlquote
 
 # Work with PEP8 and non-PEP8 versions of threading module.
 if not hasattr(threading, "current_thread"):
@@ -174,7 +184,7 @@ class LockBase:
         self.pid = os.getpid()
         if threaded:
             name = threading.current_thread().get_name()
-            tname = "%s-" % urllib.quote(name, safe="")
+            tname = "%s-" % urlquote(name, safe="")
         else:
             tname = ""
         dirname = os.path.dirname(self.lock_file)
