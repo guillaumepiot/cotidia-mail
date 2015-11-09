@@ -1,41 +1,50 @@
-{% extends "admin/base_site.html" %}
-{% block title %}Notice templates{% endblock %}
-{% block content_title %}
-<div class="inner">
-    <h1>Notice templates</h1>
-</div>
-<div class="object-tools btn-toolbar inner">
-    <div class="btn-group">
-        <a href="{% url 'cotimail:logs' %}" class="btn btn-primary pull-right">View email logs</a>
+{% extends "admin/account/page.html" %}{% load i18n %}
+{% block title %}
+    {% trans "Notices" %}
+{% endblock title %}
+
+{% block toolbar %}
+    {% if perms.app.add_model %}
+    <a href="{% url 'cotimail:logs' %}"
+        class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
+        <span class="fa fa-file-text-o"></span> {% trans "View email logs" %}
+    </a>
+    {% endif %}
+    <span class="toolbar__title">{% trans "Notices" %}</span>
+{% endblock toolbar %}
+
+{% block content %}
+<div class="grid grid--collapse">
+    <div class="grid__span-12">
+        <div class="content__inner">
+            <table class="table table--clickable">
+                <tr>
+                    <th>{% trans "Notice" %}</th>
+                    <th>{% trans "Preview" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+                {% for notice in notice_map %}
+                <tr>
+                    <td>{{notice.name}}</td>
+                    <td>
+                        {% if notice.html_template %}
+                            <a href="{% url 'cotimail:template_preview_html' notice.identifier %}">HTML</a> | 
+                        {% endif %}
+                        <a href="{% url 'cotimail:template_preview_text' notice.identifier 'text' %}">TXT</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'cotimail:new_email' notice.identifier %}">
+                            {% trans "New email" %}
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">{% trans "You have no notices setup yet." %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 </div>
-{% endblock %}
-{% block content %}
-<div id="content-main">
-    <table class="table">
-        <thead>
-        <tr><th>Notice</th><th>Preview</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-        {% for notice in notice_map %}
-        <tr>
-            <td>{{notice.name}}</td>
-            <td>
-                {% if notice.html_template %}
-                    <a href="{% url 'cotimail:template_preview_html' notice.identifier %}">HTML</a> | 
-                {% endif %}
-                <a href="{% url 'cotimail:template_preview_text' notice.identifier 'text' %}">TXT</a>
-            </td>
-            <td>
-                <a href="{% url 'cotimail:new_email' notice.identifier %}">New email</a>
-            </td>
-        </tr>
-        {% empty %}
-            <tr>
-                <td colspan="3">You have no notices setup yet.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %} 
+{% endblock content %}

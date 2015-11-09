@@ -1,100 +1,98 @@
-{% extends "admin/base_site.html" %}
-{% load i18n %}
+{% extends "admin/account/page.html" %}{% load i18n %}
 {% block title %}{% trans "Email logs" %}{% endblock %}
-{% block content_title %}
-<div class="inner">
-    <h1>Email logs</h1>
-</div>
-<div class="object-tools btn-toolbar inner">
-    <div class="btn-group">
-        <a href="{% url 'cotimail:list' %}" class="btn btn-primary pull-right">View email templates</a>
-    </div>
-</div>
+{% block toolbar %}
+    {% if perms.app.add_model %}
+    <a href="{% url 'cotimail:list' %}"
+        class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
+        <span class="fa fa-file-image-o"></span> {% trans "View email templates" %}
+    </a>
+    {% endif %}
+    <span class="toolbar__title">{% trans "Notices" %}</span>
 {% endblock %}
 {% block content %}
-<div id="content-main">
-    <div id="changelist">
-        <div class="row">
-            <div class="col-sm-12">
-                <button class="btn btn-default btn-filter">
-                    <span class="glyphicon glyphicon-filter"></span> {% trans "Show filter" %}
-                </button>
-                <div class="actions">
-                {% for value in data %}
-                    {% if value %}
-                        <span class="label">{{value}}</span>
-                    {% endif %}
-                {% endfor %}
-                {% if filter.data.status %}
-                    Status: <span class="label label-default">{{filter.data.status}}</span>
+<div class="grid grid--collapse">
+    <div class="grid__span-9">
+        <div class="content__inner">
+
+            {% for value in data %}
+                {% if value %}
+                    <span class="label">{{value}}</span>
                 {% endif %}
-                {% if filter.data.identifier %}
-                    Identifier: <span class="label label-default">{{filter.data.identifier}}</span>
-                {% endif %}
-                
-                </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{% trans "Type" %}</th>
-                            <th>{% trans "Recipients" %}</th>
-                            <th>{% trans "Context" %}</th>
-                            <th>{% trans "Sent" %}</th>
-                            <th>{% trans "Status" %}</th>
-                            <th>{% trans "Actions" %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for log in logs %}
+            {% endfor %}
+            {% if filter.data.status %}
+                Status: <span class="label label-default">{{filter.data.status}}</span>
+            {% endif %}
+            {% if filter.data.identifier %}
+                Identifier: <span class="label label-default">{{filter.data.identifier}}</span>
+            {% endif %}
+
+            <table class="table table--clickable">
+                <tr>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Recipients" %}</th>
+                    <th>{% trans "Context" %}</th>
+                    <th>{% trans "Sent" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+                {% for log in logs %}
+                <tr>
+                    <td>{{log.name}}</td>
+                    <td>{% for r in log.get_recipients %}
+                        <a href="mailto:{{r}}">{{r}}</a>
+                    {% endfor %}</td>
+                    <td><a href="{% url 'cotimail:log_context' log.id %}">{% trans "View context" %}</a></td>
+                    <td>{{log.date_sent}}</td>
+                    <td>{{log.status}}</td>
+                    <td><a href="{% url 'cotimail:email_preview' log.id %}">Preview</a></td>
+                </tr>
+                {% empty %}
                     <tr>
-                        <td>{{log.name}}</td>
-                        <td>{% for r in log.get_recipients %}
-                            <a href="mailto:{{r}}">{{r}}</a>
-                        {% endfor %}</td>
-                        <td><a href="{% url 'cotimail:log_context' log.id %}">{% trans "View context" %}</a></td>
-                        <td>{{log.date_sent}}</td>
-                        <td>{{log.status}}</td>
-                        <td><a href="{% url 'cotimail:email_preview' log.id %}">Preview</a></td>
+                        <td colspan="2"><p>{% trans "No logs." %}</p></td>
                     </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="2"><p>{% trans "No logs." %}</p></td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>      
-            <div id="changelist-filter">
-                <button class="btn btn-default btn-filter">{% trans "Hide filter" %}</button>
-                <div class="heading">{% trans 'Filter' %}</div>
-                <form action="" method="get" class="inner">
-                    {% for field in filter.form %}
-                        {% if field.is_hidden %}
-                            <div class="form-row">{{ field }}</div>
-                        {% else %}
-                            {% include 'admin/includes/field_standard.html' %}
-                        {% endif %}
-                    {% endfor %}
-                    <input type="submit" class="btn btn-primary btn-block" value="Filter" />
-                    <br>
-                </form>
+                {% endfor %}
+            </table>
+
+            <div class="content-inner">
+                <p>
+                    {% if logs.has_previous %}
+                        <a href="?page={{ logs.previous_page_number }}" class="btn btn--transparent btn--small">previous</a>
+                    {% endif %}
+
+                    <span class="btn btn--transparent btn--small">Page {{ logs.number }} of {{ logs.paginator.num_pages }}</span>
+
+                    {% if logs.has_next %}
+                        <a href="?page={{ logs.next_page_number }}" class="btn btn--transparent btn--small">next</a>
+                    {% endif %}
+                </p>
             </div>
+
         </div>
     </div>
-    <div class="inner">
-        <ul class="pagination">
-            {% if logs.has_previous %}
-                <li><a href="?page={{ logs.previous_page_number }}">previous</a></li>
-            {% endif %}
-
-            <li class="active">
-                <a href="">Page {{ logs.number }} of {{ logs.paginator.num_pages }}</a>
-            </li>
-
-            {% if logs.has_next %}
-                <li><a href="?page={{ logs.next_page_number }}">next</a></li>
-            {% endif %}
-        </ul>
+    <div class="grid__span-3">
+        <div class="content__inner">
+            <table class="table">
+                <tr>
+                    <th>{% trans "Filter" %}</th>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="content-inner">
+                            <form action="" method="get" class="inner">
+                                {% for field in filter.form %}
+                                    {% if field.is_hidden %}
+                                        {{ field }}
+                                    {% else %}
+                                        {% include "admin/includes/select-field.html" %}
+                                    {% endif %}
+                                {% endfor %}
+                                <input type="submit" class="btn btn--transparent" value="Filter" />
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %} 

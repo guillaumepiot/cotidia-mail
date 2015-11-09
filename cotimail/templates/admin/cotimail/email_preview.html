@@ -1,35 +1,82 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/account/page.html" %}{% load i18n %}
 {% block title %}Email preview{% endblock %}
-{% block content_title %}
-<div class="object-tools btn-toolbar inner">
-    <div class="btn-group">
-        <a href="{% url 'cotimail:logs' %}" class="btn btn-default pull-right">Back to logs</a>
-    </div>
-</div>
-<div class="inner">
-    <h1>Email preview <span class="label label-default">{{log.status}}</span> <small>{{log.date_created}}</small></h1>
-    <div class="clearfix"></div>
-    <p>{{ log.name }}</p>
-</div>
-{% endblock %}
+{% block toolbar %}
+    {% if perms.app.add_model %}
+    <a href="{% url 'cotimail:logs' %}"
+        class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
+        <span class="fa fa-file-text-o"></span> {% trans "Back to logs" %}
+    </a>
+    {% endif %}
+    <span class="toolbar__title">{% trans "Notices" %}</span>
+{% endblock toolbar %}
 {% block content %}
-<div id="content-main">
-    <iframe src="{% url 'cotimail:email_preview_standalone' log.id %}" style="width: 100%; height: 600px; border: none;"></iframe>
-    <form>
-        <br>
-        <div class="form-actions">
-            <div class="row">
-                <div class="col-md-12">
-                    {% if log.status == 'SAVED' %}
+<div class="grid grid--collapse">
+    <div class="grid__span-9">
+        <div class="content__inner">
+            <table class="table">
+                <tr>
+                    <th>{{ log.subject }}</th>
+                </tr>
+            </table>
+            <iframe src="{% url 'cotimail:email_preview_standalone' log.id %}" style="width: 100%; height: 600px; border: none;"></iframe>
+           
+        </div>
+    </div>
+    <div class="grid__span-3">
+        <div class="content__inner">
+            <table class="table">
+                <tr>
+                    <th colspan="2">{% trans "Log details" %}</th>
+                </tr>
+                <tr>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        {{ log.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Status
+                    </td>
+                    <td>
+                        <span class="label">{{log.status}}</span>
+                    </td>
+                </tr>
+                {% if log.status == 'SENT' %}
+                <tr>
+                    <td>
+                        Sent date
+                    </td>
+                    <td>
+                        {{log.date_sent}}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        Created date
+                    </td>
+                    <td>
+                        {{ log.date_created }}
+                    </td>
+                </tr>
+                {% if log.status == 'SAVED' %}
+                <tr>
+                    <td>
+                        <p>Action</p>
+                    </td>
+                    <td>                                               
                         <a href="{% url 'cotimail:email_sent' log.id %}" class="btn btn-primary pull-right">Send</a>
                         <a href="{% url 'cotimail:edit_email' log.id %}" class="btn btn-warning">Edit</a>
                         <a href="{% url 'cotimail:logs' %}" class="btn btn-default">Cancel</a>
-                    {% elif log.status == 'SENT' %}
-                        <a href="{% url 'cotimail:logs' %}" class="btn btn-default">Back to logs</a>
-                    {% endif %}
-                </div>
-            </div>
+                    </td>
+                </tr>
+                {% endif %}
+            </table>
         </div>
-    </form>
+    </div>
 </div>
+
 {% endblock %} 

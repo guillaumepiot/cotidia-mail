@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django import forms
 
 from cotimail import settings as cotimail_settings
 from cotimail.models import EmailLog, EMAIL_LOG_STATUS
@@ -91,8 +92,15 @@ NOTICE_NAME_CHOICES = (
 ) + tuple(_getNoticeNames())
 
 class LogFilter(django_filters.FilterSet):
-    status = django_filters.ChoiceFilter(choices=STATUS_CHOICES)#, widget=django_filters.widgets.LinkWidget
-    identifier = django_filters.ChoiceFilter(choices=NOTICE_NAME_CHOICES)
+
+    identifier = django_filters.ChoiceFilter(
+        label="Notice type",
+        choices=NOTICE_NAME_CHOICES,
+        widget=forms.Select(attrs={'class':'form__select'}))
+
+    status = django_filters.ChoiceFilter(
+        choices=STATUS_CHOICES,
+        widget=forms.Select(attrs={'class':'form__select'}))#, widget=django_filters.widgets.LinkWidget
     
     class Meta:
         model = EmailLog
