@@ -24,10 +24,10 @@ FIELD_CLASS_MAP = {
 }
 
 class NoticeForm(BetterForm):
-    email = forms.CharField(max_length=250)
-    required_css_class = 'required'
-    error_css_class = 'errorfield'
-
+    email = forms.CharField(
+        max_length=250,
+        widget=forms.TextInput(attrs={'class': 'form__text'})
+        )
 
     def __init__(self, json_fields, *args, **kwargs):
 
@@ -80,6 +80,17 @@ class NoticeForm(BetterForm):
                     kwargs['choices'] = FIELD_CLASS_MAP[field_type]['choices']
 
                 self.fields[field_name] = field_class(**kwargs)
+
+                if field_widget:
+                    print self.fields[field_name].widget.attrs
+                    if field_widget.__name__ == 'Select':
+                        self.fields[field_name].widget.attrs = {'class': 'form__select'}
+                    if field_widget.__name__ == 'TextInput':
+                        self.fields[field_name].widget.attrs = {'class': 'form__text'}
+                    if field_widget.__name__ == 'Textarea':
+                        self.fields[field_name].widget.attrs = {'class': 'form__text', 'rows': 10}
+                else:
+                    self.fields[field_name].widget.attrs = {'class': 'form__text'}
 
                 # Push the field name to the temporary field list
                 _fields.append(field_name)

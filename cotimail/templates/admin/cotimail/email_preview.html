@@ -1,76 +1,88 @@
 {% extends "admin/account/page.html" %}{% load i18n %}
-{% block title %}Email preview{% endblock %}
+
+{% block title %}
+    {% trans "Email preview" %}
+{% endblock %}
+
 {% block toolbar %}
-    {% if perms.app.add_model %}
+    {% if perms.cotimail.change_emaillog %}
     <a href="{% url 'cotimail:logs' %}"
         class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
         <span class="fa fa-file-text-o"></span> {% trans "Back to logs" %}
     </a>
     {% endif %}
-    <span class="toolbar__title">{% trans "Notices" %}</span>
+    <span class="toolbar__title">{% trans "Cotimail" %}</span>
 {% endblock toolbar %}
+
 {% block content %}
-<div class="grid grid--collapse">
-    <div class="grid__span-9">
+<div class="content__inner">
+    <p class="breadcrumb">
+        <a href="{% url 'cotimail:logs' %}">{% trans "Email logs" %}</a>  
+        &nbsp;<span class="fa fa-angle-right"></span>&nbsp;
+        {% trans "Preview email" %}
+    </p>
+</div>
+<div class="grid grid--collapse grid--break-mobile">
+    <div class="grid__span-8">
         <div class="content__inner">
-            <table class="table">
-                <tr>
-                    <th>{{ log.subject }}</th>
-                </tr>
-            </table>
             <iframe src="{% url 'cotimail:email_preview_standalone' log.id %}" style="width: 100%; height: 600px; border: none;"></iframe>
-           
         </div>
     </div>
-    <div class="grid__span-3">
+    <div class="grid__span-4">
         <div class="content__inner">
             <table class="table">
-                <tr>
-                    <th colspan="2">{% trans "Log details" %}</th>
+                <tr class="table-row">
+                    <th colspan="2" class="table-head-cell">{% trans "Email details" %}</th>
                 </tr>
-                <tr>
-                    <td>
-                        Name
+                <tr class="table-row">
+                    <td class="table-cell">
+                        Subject
                     </td>
-                    <td>
-                        {{ log.name }}
+                    <td class="table-cell">
+                        {{ log.subject }}
                     </td>
                 </tr>
-                <tr>
-                    <td>
+                <tr class="table-row">
+                    <td class="table-cell">
                         Status
                     </td>
-                    <td>
+                    <td class="table-cell">
                         <span class="label">{{log.status}}</span>
                     </td>
                 </tr>
                 {% if log.status == 'SENT' %}
-                <tr>
-                    <td>
+                <tr class="table-row">
+                    <td class="table-cell">
                         Sent date
                     </td>
-                    <td>
+                    <td class="table-cell">
                         {{log.date_sent}}
                     </td>
                 </tr>
                 {% endif %}
-                <tr>
-                    <td>
+                <tr class="table-row">
+                    <td class="table-cell">
                         Created date
                     </td>
-                    <td>
+                    <td class="table-cell">
                         {{ log.date_created }}
                     </td>
                 </tr>
                 {% if log.status == 'SAVED' %}
-                <tr>
-                    <td>
+                <tr class="table-row">
+                    <td class="table-cell">
                         <p>Action</p>
                     </td>
-                    <td>                                               
-                        <a href="{% url 'cotimail:email_sent' log.id %}" class="btn btn-primary pull-right">Send</a>
-                        <a href="{% url 'cotimail:edit_email' log.id %}" class="btn btn-warning">Edit</a>
-                        <a href="{% url 'cotimail:logs' %}" class="btn btn-default">Cancel</a>
+                    <td class="table-cell">                                               
+                        <a href="{% url 'cotimail:email_sent' log.id %}" class="btn btn--primary pull-right">
+                            {% trans "Send" %}
+                        </a>
+                        <a href="{% url 'cotimail:edit_email' log.id %}" class="btn btn--change">
+                            {% trans "Edit" %}
+                        </a>
+                        <a href="{% url 'cotimail:logs' %}" class="btn btn--transparent">
+                            {% trans "Back" %}
+                        </a>
                     </td>
                 </tr>
                 {% endif %}

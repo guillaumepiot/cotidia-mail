@@ -1,57 +1,98 @@
-{% extends "admin/base_site.html" %}{% load i18n %}
-{% block title %}Notifications{% endblock %}
-{% block content_title %}<div class="inner"><h1>New email</h1></div>{% endblock %}
-{% block breadcrumbs %}
-<ol class="breadcrumb">
-  <li><a href="{% url 'admin:index' %}">Dashboard</a></li>
-  <li><a href="{% url 'cotimail:list' %}">Templates</a></li>
-</ol>
+{% extends "admin/account/page.html" %}{% load i18n %}
+
+{% block title %}
+    {% if log %}
+        {% trans "Edit email" %}
+    {% else %}  
+        {% trans "New email" %}
+    {% endif %}
 {% endblock %}
+
+{% block toolbar %}
+    <span class="toolbar__title">{% trans "Cotimail" %}</span>
+{% endblock toolbar %}
+
 {% block content %}
-<div id="content-main">
-
-    <form action="" method="post">
-        {% csrf_token %}
-        <div>
-        {% if form.errors %}
-          <div class="inner">
-            <p class="alert alert-danger">
-            {% blocktrans count counter=form.errors|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
-            </p>
-            {{ form.non_field_errors }}
-          </div>
+<div class="content__inner">
+    <p class="breadcrumb">
+        <a href="{% url 'cotimail:list' %}">{% trans "Email templates" %}</a>  
+        &nbsp;<span class="fa fa-angle-right"></span>&nbsp;
+        {% if log %}
+            {% trans "Edit email" %}
+        {% else %}  
+            {% trans "New email" %}
         {% endif %}
-          <div class="inner">
-            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
-            {% for fieldset in form.fieldsets %}
-                <fieldset class="{{ fieldset.classes }}">
-                    {% if fieldset.legend %}
-                        <h2>{{ fieldset.legend }}</h2>
-                    {% endif %}
-                    {% if fieldset.description %}
-                        <p class="description">{{ fieldset.description }}</p>
-                    {% endif %}
-                    {% for field in fieldset %}
-                        {% if field.is_hidden %}
-                            <div class="form-row">{{ field }}</div>
-                        {% else %}
-                            {% include 'admin/includes/field_standard.html' %}
-                        {% endif %}
-                    {% endfor %}
-                </fieldset>
-            {% endfor %}
-          </div>
-
-          <div class="form-actions">
-            <div class="row">
-              <div class="col-md-12">
-                <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
-                <a class="btn btn-default" href="{% url 'cotimail:list' %}">{% trans "Cancel" %}</a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </form>
+    </p>
 </div>
+<form action="" method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+            <div class="alert alert--error">
+            {% for error in form.non_field_errors %}
+                    {{error}}<br>
+            {% endfor %}
+            </div>
+    {% endif %}
+    {% if form.errors %}
+        <div class="content__inner">
+            <div class="alert alert--error">
+            {% for field in form %}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        {{error}}<br>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    
+    {% for fieldset in form.fieldsets %}
+    <div class="[ content__inner ] [ box box--padded box--bordered ]">
+        <fieldset>
+            <legend>
+                {% if fieldset.legend %}
+                    {{ fieldset.legend }}
+                {% endif %}
+            </legend>
+        
+        {% if fieldset.description %}
+            <p>{{ fieldset.description }}</p>
+        {% endif %}
+
+        {% for field in fieldset %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% else %}
+                <div class="grid">
+                    <div class="grid__span-2">
+                        <span class="form__label--inline">
+                            {{field.label}}
+                        </span>
+                    </div>
+                    <div class="{% if field.field.widget.attrs.rows %}grid__span-6{% else %}grid__span-3{% endif %}">
+                        {% if field.field.widget.attrs.class == 'form__text' %}
+                            {% include "admin/includes/text-field.html" %}
+                        {% elif field.field.widget.attrs.class == 'form__select' %}
+                            {% include "admin/includes/select-field.html" %}
+                        {% elif field.field.widget.attrs.class == 'form__checkbox' %}
+                            {% include "admin/includes/checkbox-field.html" %}
+                        {% else %}
+                            {% include "admin/includes/text-field.html" %}
+                        {% endif %}
+                    </div>  
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        </fieldset>
+    </div>
+    {% endfor %}
+
+    <div class="content__inner">
+        <input type="submit" value="{% trans 'Save' %}" class="btn btn--primary" />
+        <a class="btn btn--transparent" href="{% url 'cotimail:list' %}">{% trans "Cancel" %}</a>
+    </div>   
+</form>
 {% endblock %} 
 

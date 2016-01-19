@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django import forms
+from django.contrib import messages
 
 from cotimail import settings as cotimail_settings
 from cotimail.models import EmailLog, EMAIL_LOG_STATUS
@@ -84,11 +85,11 @@ def log_context(request, log_id, template='admin/cotimail/log_context.html'):
 #
 
 STATUS_CHOICES = (
-    ('', 'All'),
+    ('', 'Status'),
 ) + EMAIL_LOG_STATUS
 
 NOTICE_NAME_CHOICES = (
-    ('', 'All'),
+    ('', 'Template'),
 ) + tuple(_getNoticeNames())
 
 class LogFilter(django_filters.FilterSet):
@@ -127,7 +128,12 @@ def logs(request, template='admin/cotimail/logs.html'):
 
     
 
-    return render_to_response(template, {'logs': logs, 'filter': log_filter, 'logs': logs},
+    return render_to_response(template, {
+            'logs': logs, 
+            'filter': log_filter, 
+            'logs': logs, 
+            'is_paginated': True
+            },
         context_instance=RequestContext(request))
 
 
@@ -136,6 +142,7 @@ def logs(request, template='admin/cotimail/logs.html'):
 def new_email(request, slug, template='admin/cotimail/email_form.html', redirect_url='cotimail:email_preview'):
 
     noticeClass = _getNoticeClass(slug)
+    notice = noticeClass()
 
     if request.method == "POST":
         form = NoticeForm(data=request.POST, json_fields=noticeClass().get_context_editable())
@@ -157,13 +164,12 @@ def new_email(request, slug, template='admin/cotimail/email_form.html', redirect
             # Send the notice straight away
             log_id = notice.save()
             return HttpResponseRedirect(reverse(redirect_url, args=(log_id,)))
-    else:
-        notice = noticeClass()
+    else: 
         form = NoticeForm(initial=noticeClass.default_context, json_fields=noticeClass().get_context_editable())
 
     
 
-    return render_to_response(template, {'form':form},
+    return render_to_response(template, {'form':form, 'notice': notice},
         context_instance=RequestContext(request))
 
 @login_required
@@ -188,7 +194,7 @@ def edit_email(request, id, template='admin/cotimail/email_form.html', redirect_
     else:
         form = NoticeForm(initial=notice.context, json_fields=notice.get_context_editable())
 
-    return render_to_response(template, {'form':form},
+    return render_to_response(template, {'form':form, 'log':log},
         context_instance=RequestContext(request))
 
 #
@@ -229,6 +235,8 @@ def email_sent(request, id, redirect_url='cotimail:logs'):
     notice = log.get_object()
 
     log.send()
+
+    messages.success(request, "Email has been sent")
 
     return HttpResponseRedirect(reverse(redirect_url))
 

@@ -1,82 +1,72 @@
 {% extends "admin/account/page.html" %}{% load i18n %}
+
 {% block title %}{% trans "Email logs" %}{% endblock %}
+
 {% block toolbar %}
     {% if perms.app.add_model %}
     <a href="{% url 'cotimail:list' %}"
         class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
-        <span class="fa fa-file-image-o"></span> {% trans "View email templates" %}
+        <span class="fa fa-file-image-o"></span> {% trans "Email templates" %}
     </a>
     {% endif %}
-    <span class="toolbar__title">{% trans "Notices" %}</span>
+    <span class="toolbar__title">{% trans "Cotimail" %}</span>
 {% endblock %}
+
 {% block content %}
 <div class="grid grid--collapse">
     <div class="grid__span-9">
         <div class="content__inner">
-
-            {% for value in data %}
-                {% if value %}
-                    <span class="label">{{value}}</span>
-                {% endif %}
-            {% endfor %}
-            {% if filter.data.status %}
-                Status: <span class="label label-default">{{filter.data.status}}</span>
-            {% endif %}
-            {% if filter.data.identifier %}
-                Identifier: <span class="label label-default">{{filter.data.identifier}}</span>
-            {% endif %}
-
             <table class="table table--clickable">
-                <tr>
-                    <th>{% trans "Type" %}</th>
-                    <th>{% trans "Recipients" %}</th>
-                    <th>{% trans "Context" %}</th>
-                    <th>{% trans "Sent" %}</th>
-                    <th>{% trans "Status" %}</th>
-                    <th>{% trans "Actions" %}</th>
+                <tr class="table-row">
+                    <th class="table-head-cell">{% trans "Type" %}</th>
+                    <th class="table-head-cell">{% trans "Recipients" %}</th>
+                    <th class="table-head-cell">{% trans "Context" %}</th>
+                    <th class="table-head-cell">{% trans "Sent" %}</th>
+                    <th class="table-head-cell">{% trans "Status" %}</th>
+                    <th class="table-head-cell">{% trans "Actions" %}</th>
                 </tr>
                 {% for log in logs %}
-                <tr>
-                    <td>{{log.name}}</td>
-                    <td>{% for r in log.get_recipients %}
+                <tr class="table-row" onClick="window.location = '{% url 'cotimail:email_preview' log.id %}'">
+                    <td class="table-cell">{{log.name}}</td>
+                    <td class="table-cell">{% for r in log.get_recipients %}
                         <a href="mailto:{{r}}">{{r}}</a>
                     {% endfor %}</td>
-                    <td><a href="{% url 'cotimail:log_context' log.id %}">{% trans "View context" %}</a></td>
-                    <td>{{log.date_sent}}</td>
-                    <td>{{log.status}}</td>
-                    <td><a href="{% url 'cotimail:email_preview' log.id %}">Preview</a></td>
+                    <td class="table-cell"><a href="{% url 'cotimail:log_context' log.id %}">{% trans "View context" %}</a></td>
+                    <td class="table-cell">{{log.date_sent}}</td>
+                    <td class="table-cell">
+                        {% if log.status == 'SENT' %}
+                            <span class="label label--success">{{log.status}}</span>
+                        {% elif log.status == 'QUOTED' %}
+                            <span class="label label--primary">{{log.status}}</span>
+                        {% else %}
+                            <span class="label">{{log.status}}</span>
+                        {% endif %}
+                    </td>
+                    <td class="table-cell">
+                        <a href="{% url 'cotimail:email_preview' log.id %}">Preview</a>
+                    </td>
                 </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="2"><p>{% trans "No logs." %}</p></td>
+                    <tr class="table-row">
+                        <td colspan="6" class="table-cell">
+                            {% trans "No logs." %}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
-
-            <div class="content-inner">
-                <p>
-                    {% if logs.has_previous %}
-                        <a href="?page={{ logs.previous_page_number }}" class="btn btn--transparent btn--small">previous</a>
-                    {% endif %}
-
-                    <span class="btn btn--transparent btn--small">Page {{ logs.number }} of {{ logs.paginator.num_pages }}</span>
-
-                    {% if logs.has_next %}
-                        <a href="?page={{ logs.next_page_number }}" class="btn btn--transparent btn--small">next</a>
-                    {% endif %}
-                </p>
-            </div>
-
+            {% with logs as page_obj %}
+                {% include 'admin/includes/pagination.html' %}
+            {% endwith %}
         </div>
     </div>
     <div class="grid__span-3">
         <div class="content__inner">
             <table class="table">
-                <tr>
-                    <th>{% trans "Filter" %}</th>
+                <tr class="table-row">
+                    <th class="table-head-cell">{% trans "Filter" %}</th>
                 </tr>
-                <tr>
-                    <td>
+                <tr class="table-row">
+                    <td class="table-cell">
                         <div class="content-inner">
                             <form action="" method="get" class="inner">
                                 {% for field in filter.form %}
@@ -86,7 +76,10 @@
                                         {% include "admin/includes/select-field.html" %}
                                     {% endif %}
                                 {% endfor %}
-                                <input type="submit" class="btn btn--transparent" value="Filter" />
+                                <input type="submit" class="btn btn--primary" value="Filter" />
+                                <a class="btn btn--transparent" href="{% url 'cotimail:logs' %}">
+                                    {% trans "Reset" %}
+                                </a>
                             </form>
                         </div>
                     </td>
