@@ -82,7 +82,6 @@ class NoticeForm(BetterForm):
                 self.fields[field_name] = field_class(**kwargs)
 
                 if field_widget:
-                    print self.fields[field_name].widget.attrs
                     if field_widget.__name__ == 'Select':
                         self.fields[field_name].widget.attrs = {'class': 'form__select'}
                     if field_widget.__name__ == 'TextInput':
