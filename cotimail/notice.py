@@ -59,11 +59,6 @@ class Notice(object):
           }
         ]
     """
-
-    first_name = ''
-    last_name = ''
-
-    notice = ''
     
     #Hook the notice to an object
     content_object = False
