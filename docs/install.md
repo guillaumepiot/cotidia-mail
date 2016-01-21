@@ -16,6 +16,14 @@ Add `cotimail` to your project settings `INSTALLED_APPS`:
         'cotimail',
      )
 
+Cotimail uses Mandrill ([Djrill](https://github.com/brack3t/Djrill)) to send email, you will need to enter the API key:
+
+    MANDRILL_API_KEY = "<myapp-api-key>"
+
+Instruct Django to use the Djrill email backend:
+
+    EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+
 Run the migration:
 
     $ python manage.py migrate cotimail
@@ -23,57 +31,64 @@ Run the migration:
 Settings
 --------
 
-**MANDRILL_API_KEY**
 
-Default: **"myapp-api-key"** (string)
-
-Cotimail uses Mandrill to send email, you will need to enter the API key:
-
-    MANDRILL_API_KEY = "<myapp-api-key>"
 
 **COTIMAIL_REPLY_EMAIL**
 
-Default: "noreply@mywebsite.com"
+Default: `No-reply <noreply@mywebsite.com>`
 
-    COTIMAIL_REPLY_EMAIL = "noreply@mywebsite.com"
+Defines to default reply to email for all sent notifications. Please note that
+this setting can be overridden on a notice basis.
+
+**COTIMAIL_SENDER**
+
+Default: `App <info@example.com>`
+
+Defines to sender email for all sent notifications. Please note that
+this setting can be overridden on a notice basis.
 
 **COTIMAIL_APPS**
 
-Default: []
+Default: `[]` (empty list)
 
 List the apps that contains notices to be included in the admin. Cotimail allow you to preview and create email from those notices.
 
-	# Define a list of apps supporting notices. The list should be pointing to individual notices.py
 	COTIMAIL_APPS = [
 		'booking.notices',
 	]
-		
-	# Enter your Mandrill APY key
-	MANDRILL_API_KEY = "myapp-api-key"
-		
-	# Setup the Django email backend
-	EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 
-	# Use the local css inlining feature
-	# Default: False
-	COTIMAIL_INLINE_CSS_LOCAL = getattr(settings, 'COTIMAIL_INLINE_CSS_LOCAL', False)
+**COTIMAIL_INLINE_CSS_LOCAL**
 
-	# Use MAndrill css inlining feature - email max limit is 256KB
-	# Default: True
-	COTIMAIL_INLINE_CSS_MANDRILL = getattr(settings, 'COTIMAIL_INLINE_CSS_MANDRILL', True)
+Default: `False`
 
-	# Queue mail using logs rather than sending straight away
-	# Default: True
-	COTIMAIL_QUEUE_MAIL = True
+Use the local css inlining feature.
 
-	# Save email log in the database, it will be forced to True if COTIMAIL_QUEUE_MAIL is True
-	# Default: True
-	COTIMAIL_LOG_MAIL = True
+**COTIMAIL_INLINE_CSS_MANDRILL**
 
-	# How long to wait for the lock to become available. Default of -1 means to never wait for the lock to become available.
-	# This only applies when using crontab setup to execute the emit_notices management command to send queued messages rather # than sending immediately.
-	# Default: -1
-	COTIMAIL_LOCK_WAIT_TIMEOUT = -1
+Default: `True`
+
+Use Mandrill css inlining feature - email max limit is 256KB
+
+**COTIMAIL_QUEUE_MAIL**
+
+Default: `True`
+	
+Queue mail using logs rather than sending straight away.
+
+**COTIMAIL_LOG_MAIL**
+
+Default: `True`
+
+Save email log in the database, it will be forced to True if COTIMAIL_QUEUE_MAIL is True
+
+**COTIMAIL_LOCK_WAIT_TIMEOUT**
+
+Default: `-1` (Integer)
+
+How long to wait for the lock to become available. Default of -1 means to never 
+wait for the lock to become available. This only applies when using crontab 
+setup to execute the send_logged_notices management command to send queued 
+messages rather than sending immediately.
 
 
 
@@ -82,7 +97,7 @@ Enable admin management
 
 You can access the notice logs and send notice emails from the admin. To do so, you will need to provide the URLs to the admin views and optionally add a menu item to navigate to it.
 
-Add the following rule to your urls.py:
+Add the following rule to your `urls.py`:
 
     url(r'^admin/notification/', include('cotimail.urls', namespace="cotimail")),
 
