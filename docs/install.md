@@ -1,30 +1,47 @@
 Installation & Setup
 ====================
 
-Getting Cotimail
-----------------
+Install using PIP straight from the repository:
 
-You can install Cotimail from source by downloading the package from BitBucket: [https://bitbucket.org/guillaumepiot/cotimail](https://bitbucket.org/guillaumepiot/cotimail).
-
-	$ python setup.py install
-
-Though it is easier to install it using PIP: (not published yet)
-
-	$ pip install cotimail
+    $ pip install git+https://bitbucket.org/guillaumepiot/cotimail.git
 
 If you are a contributor and would like to make source code edit while working on a project, you can install the package in edit mode:
 
-	$ pip install -e git+https://bitbucket.org/guillaumepiot/cotimail.git#egg=cotimail
+    $ pip install -e git+https://bitbucket.org/guillaumepiot/cotimail.git#egg=cotimail
 	
-	
-Project setup
--------------
+Add `cotimail` to your project settings `INSTALLED_APPS`:
 
-### settings.py
+    INSTALLED_APPS = (
+        ...
+        'cotimail',
+     )
 
-	# Setup a reply to email:
-	# Default: reply@example.com
-	COTIMAIL_REPLY_EMAIL = 'noreply@mywebsite.com'
+Run the migration:
+
+    $ python manage.py migrate cotimail
+
+Settings
+--------
+
+**MANDRILL_API_KEY**
+
+Default: **"myapp-api-key"** (string)
+
+Cotimail uses Mandrill to send email, you will need to enter the API key:
+
+    MANDRILL_API_KEY = "<myapp-api-key>"
+
+**COTIMAIL_REPLY_EMAIL**
+
+Default: "noreply@mywebsite.com"
+
+    COTIMAIL_REPLY_EMAIL = "noreply@mywebsite.com"
+
+**COTIMAIL_APPS**
+
+Default: []
+
+List the apps that contains notices to be included in the admin. Cotimail allow you to preview and create email from those notices.
 
 	# Define a list of apps supporting notices. The list should be pointing to individual notices.py
 	COTIMAIL_APPS = [
@@ -36,12 +53,6 @@ Project setup
 		
 	# Setup the Django email backend
 	EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
-
-	# Add cotimail to your installed apps
-	INSTALLED_APPS = (
-		...
-	    'cotimail',
-	)
 
 	# Use the local css inlining feature
 	# Default: False
@@ -66,22 +77,16 @@ Project setup
 
 
 
-
-
-
 Enable admin management
 -----------------------
 
-You can access the notice logs and send notice emails from the admin. To do so, you will need to provide the URLs to the admin views and optionally add a menu item to navigateto it.
+You can access the notice logs and send notice emails from the admin. To do so, you will need to provide the URLs to the admin views and optionally add a menu item to navigate to it.
 
 Add the following rule to your urls.py:
 
-	# Notices URL should be before the default admin ones
-	url(r'^admin/notices/', include('cotimail.urls', namespace='cotimail')),
-	url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/notification/', include('cotimail.urls', namespace="cotimail")),
 
-If you are using Admin Tools, add a menu item for the admin
+Register the menu with the account menu manager (in `admin.py`):
 
-	...
-	items.MenuItem(_('Notices'), '/admin/notices/'),
-	...
+    from account.menu import menu
+    menu.register("cotimail", "admin/cotimail/menu.html", 1) # 1 being the order id

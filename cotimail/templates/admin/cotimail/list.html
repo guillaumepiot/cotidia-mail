@@ -34,7 +34,7 @@
                 <a href="{% url 'cotimail:template_preview_text' notice.identifier 'text' %}">TXT</a>
             </td>
             <td class="table-cell">
-                <a href="{% url 'sales-admin:new_email' notice.identifier %}"
+                <a href="{% url 'cotimail:new_email' notice.identifier %}"
                     class="btn btn--small btn--create">
                     <span class="fa fa-plus"></span>
                     {% trans "New email" %}

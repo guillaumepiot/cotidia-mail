@@ -30,7 +30,7 @@ def _getNoticeClass(slug):
                 notice = obj()
                 if notice.identifier == slug:
                     return obj
-    raise Exception('Notice could not be found')
+    raise Http404('Notice could not be found')
 
 def _getNoticeNames(apps=cotimail_settings.COTIMAIL_APPS):
     NOTICE_NAMES = []
