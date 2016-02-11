@@ -50,6 +50,30 @@
                         <span class="label">{{log.status}}</span>
                     </td>
                 </tr>
+                <tr class="table-row">
+                    <td class="table-cell">
+                        From
+                    </td>
+                    <td class="table-cell">
+                        {{log.sender}}
+                    </td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-cell">
+                        To
+                    </td>
+                    <td class="table-cell">
+                        {{log.recipients}}
+                    </td>
+                </tr>
+                <tr class="table-row">
+                    <td class="table-cell">
+                        Reply-To
+                    </td>
+                    <td class="table-cell">
+                        {{log.reply_to}}
+                    </td>
+                </tr>
                 {% if log.status == 'SENT' %}
                 <tr class="table-row">
                     <td class="table-cell">
