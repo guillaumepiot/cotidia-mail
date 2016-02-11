@@ -210,6 +210,7 @@ class Notice(object):
             body=self.get_body_txt(),
             from_email=self.sender,
             to=recipients,
+            reply_to=self.reply_to,
             headers=self.headers # optional extra headers
         )
         if self.html_template:

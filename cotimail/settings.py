@@ -1,6 +1,6 @@
 from django.conf import settings
 
-COTIMAIL_REPLY_EMAIL = getattr(settings, 'COTIMAIL_REPLY_EMAIL', 'No-reply <noreply@mywebsite.com>')
+COTIMAIL_REPLY_EMAIL = getattr(settings, 'COTIMAIL_REPLY_EMAIL', ['No-reply <noreply@mywebsite.com>'])
 COTIMAIL_SENDER = getattr(settings, 'COTIMAIL_SENDER', 'App <info@example.com>')
 COTIMAIL_APPS = getattr(settings, 'COTIMAIL_APPS', [])
 COTIMAIL_INLINE_CSS_LOCAL = getattr(settings, 'COTIMAIL_INLINE_CSS_LOCAL', False)
