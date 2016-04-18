@@ -1,8 +1,7 @@
 import json, pickle, base64
 
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.template import Context
+from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 from django.utils import formats
 from django.forms.models import model_to_dict
@@ -115,9 +114,9 @@ class Notice(object):
 
     def get_context(self, context=False):
         if context:
-            return Context(self.get_context_dict(context))
+            return self.get_context_dict(context)
         else:
-            return Context(self.get_context_dict())
+            return self.get_context_dict()
 
 
     def get_context_editable(self):
@@ -126,33 +125,27 @@ class Notice(object):
         else:
             return {}
 
-    def get_body_html(self, context=False):
-        if context:
-            email_context = self.get_context(context)
-        else:
-            email_context = self.get_context()
-        
-        body_html = render_to_string(self.html_template, self.body_vars, email_context)
-        if cotimail_settings.COTIMAIL_INLINE_CSS_LOCAL:
-            body_html = inline_css(body_html)
-        return body_html
+    def render_to_html(self, template, context):
+        template = get_template(template)
+        return template.render(context)
 
+    #
+    # Render the email to the HTML version
+    #
+    def get_body_html(self, context=False):        
+        return self.render_to_html(self.html_template, self.get_context(context))
+
+    #
+    # Render the email to the TXT version
+    #
     def get_body_txt(self, context=False):
-        if context:
-            email_context = self.get_context(context)
-        else:
-            email_context = self.get_context()
-        return render_to_string(self.text_template, self.body_vars, email_context)
+        return self.render_to_html(self.text_template, self.get_context(context))
 
+    #
+    # Render the email to the PDF version
+    #
     def get_body_pdf(self, context=False):
-        if context:
-            email_context = self.get_context(context)
-        else:
-            email_context = self.get_context()
-        
-        body_pdf = render_to_string(self.pdf_template, self.body_vars, email_context)
-
-        return body_pdf
+        return self.render_to_html(self.pdf_template, self.get_context(context))
 
     def get_subject(self):
         return self.subject
