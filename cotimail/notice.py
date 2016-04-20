@@ -59,27 +59,13 @@ class Notice(object):
         ]
     """
     
-    #Hook the notice to an object
     content_object = False
 
-    # Mandrill meta data
-    # Complete send call API doc available here: https://mandrillapp.com/api/docs/messages.html
-    track_opens = False # Boolean
-    track_clicks = False # Boolean (If you want to track clicks in HTML only, not plaintext mail, you must not set this property, and instead just set the default in your Mandrill account sending options.)
-    auto_text = False # whether or not to automatically generate a text part for messages that are not given text
-    auto_html = False # whether or not to automatically generate an HTML part for messages that are not given HTML
-    inline_css = True if cotimail_settings.COTIMAIL_INLINE_CSS_MANDRILL else False # whether or not to automatically inline all CSS styles provided in the message HTML - only for HTML documents less than 256KB in size
-    url_strip_qs = False # whether or not to strip the query string from URLs when aggregating tracked URL data
-    preserve_recipients = False # Boolean
-    global_merge_vars = {} # a dict -- e.g., { 'company': "ACME", 'offer': "10% off" }
-    recipient_merge_vars = {} # a dict whose keys are the recipient email addresses and whose values are dicts of merge vars for each recipient -- e.g., { 'wiley@example.com': { 'offer': "15% off anvils" } }
-    tags = '' # a list of strings
-    google_analytics_domains = [] # a list of string domain names
-    google_analytics_campaign = '' # a string or list of strings
-    metadata = {} # a dict
-    recipient_metadata = {} # a dict whose keys are the recipient email addresses, and whose values are dicts of metadata for each recipient (similar to recipient_merge_vars)
+    #
     # Attachments
+    #
     # A list of dictionary containing the raw file data
+    #
     attachments = [] #[{"content_type": "application/pdf","name": "myfile.txt","file_path": "/file/doc.pdf"}]
 
     def __init__(self, **kwargs):
@@ -89,8 +75,6 @@ class Notice(object):
     @property
     def headers(self):
         _headers = {}
-        if self.reply_to:
-            _headers['Reply-To'] = self.reply_to
         return _headers
 
     @property
@@ -208,22 +192,6 @@ class Notice(object):
         )
         if self.html_template:
             msg.attach_alternative(self.get_body_html(), "text/html")
-
-        # Mandrill options
-        msg.track_opens = self.track_opens
-        msg.track_clicks = self.track_clicks
-        msg.auto_text = self.auto_text
-        msg.auto_html = self.auto_html
-        msg.inline_css = self.inline_css
-        msg.url_strip_qs = self.url_strip_qs
-        msg.preserve_recipients = self.preserve_recipients
-        msg.global_merge_vars = self.global_merge_vars
-        msg.recipient_merge_vars = self.recipient_merge_vars
-        msg.tags = self.tags
-        msg.google_analytics_domains = self.google_analytics_domains
-        msg.google_analytics_campaign = self.google_analytics_campaign
-        msg.metadata = self.metadata
-        msg.recipient_metadata = self.recipient_metadata
 
         if self.attachments:
             for attachment in self.attachments:

@@ -14,3 +14,7 @@ Documentation
 [Commands](https://gitlab.com/cotidia/cotimail/wikis/commands)
 
 [Dependencies](https://gitlab.com/cotidia/cotimail/wikis/dependencies)
+
+Run tests:
+
+	$ python manage.py test cotimail.tests --keepdb
