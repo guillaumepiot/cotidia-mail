@@ -1,6 +1,5 @@
 import os
 from distutils.core import setup
-from setuptools import find_packages
 
 
 VERSION = __import__("cotimail").VERSION
@@ -14,7 +13,8 @@ CLASSIFIERS = [
 ]
 
 install_requires = [
-    'django-form-utils==1.0.3'
+    'django-form-utils==1.0.3',
+    'django-filter==0.13.0'
 ]
 
 # taken from django-registration
@@ -28,26 +28,26 @@ if root_dir:
 for dirpath, dirnames, filenames in os.walk('cotimail'):
     # Ignore dirnames that start with '.'
     for i, dirname in enumerate(dirnames):
-        if dirname.startswith('.'): del dirnames[i]
+        if dirname.startswith('.'):
+            del dirnames[i]
     if '__init__.py' in filenames:
         pkg = dirpath.replace(os.path.sep, '.')
         if os.path.altsep:
             pkg = pkg.replace(os.path.altsep, '.')
         packages.append(pkg)
     elif filenames:
-        prefix = dirpath[9:] # Strip "cotimail/" or "cotimail\"
+        prefix = dirpath[9:]  # Strip "cotimail/" or "cotimail\"
         for f in filenames:
             data_files.append(os.path.join(prefix, f))
 
 
 setup(
     name="cotimail",
-    description="A Django transaction email manager, based on Djrill (a Mandrill API integration)",
+    description="A Django transaction email manager.",
     version=VERSION,
     author="Guillaume Piot",
     author_email="guillaume@cotidia.com",
     url="https://bitbucket.org/guillaumepiot/cotimail",
-    download_url="https://bitbucket.org/guillaumepiot/cotidia-cms-base/downloads/cotimail-%s.tar.gz" % VERSION,
     package_dir={'cotimail': 'cotimail'},
     packages=packages,
     package_data={'cotimail': data_files},

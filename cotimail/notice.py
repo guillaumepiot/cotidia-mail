@@ -1,19 +1,17 @@
-import json, pickle, base64
+import json
+import pickle
+import base64
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
-from django.utils.translation import ugettext_lazy as _
-from django.utils import formats
-from django.forms.models import model_to_dict
 from django.utils.timezone import now
 
 from cotimail import settings as cotimail_settings
-
-from .utils import inline_css
-from .models import EmailLog
+from cotimail.models import EmailLog
 
 # Note about custom notice
-# All notice classes name must ends with 'Notice', have a unique 'identifer' attribute and a 'name' attribute
+# All notice classes name must ends with 'Notice', have a unique 'identifer'
+# attribute and a 'name' attribute
 # Those identifiers are necessary from the admin management of notices
 #
 # You will need to subclass the main Notice class to create custom notices
@@ -25,6 +23,7 @@ from .models import EmailLog
 
 __all__ = ('Notice',)
 
+
 class Notice(object):
     name = 'Notice'
     identifier = 'notice'
@@ -34,7 +33,7 @@ class Notice(object):
     body_vars = False
 
     sender = cotimail_settings.COTIMAIL_SENDER
-    recipients = ['Firstname Lastname <firstname.lastname@example.com>',]
+    recipients = ['Firstname Lastname <firstname.lastname@example.com>']
     reply_to = cotimail_settings.COTIMAIL_REPLY_EMAIL
 
     default_context = {}
@@ -58,19 +57,26 @@ class Notice(object):
           }
         ]
     """
-    
+
     content_object = False
 
     #
     # Attachments
     #
     # A list of dictionary containing the raw file data
-    #
-    attachments = [] #[{"content_type": "application/pdf","name": "myfile.txt","file_path": "/file/doc.pdf"}]
+    # Eg:
+    # [
+    #     {
+    #         "content_type": "application/pdf",
+    #         "name": "myfile.txt",
+    #         "file_path": "/file/doc.pdf"
+    #     }
+    # ]
+    attachments = []
 
     def __init__(self, **kwargs):
         for k in kwargs.keys():
-           self.__setattr__(k, kwargs[k])
+            self.__setattr__(k, kwargs[k])
 
     @property
     def headers(self):
@@ -102,7 +108,6 @@ class Notice(object):
         else:
             return self.get_context_dict()
 
-
     def get_context_editable(self):
         if hasattr(self, 'context_editable'):
             return self.context_editable
@@ -116,41 +121,50 @@ class Notice(object):
     #
     # Render the email to the HTML version
     #
-    def get_body_html(self, context=False):        
-        return self.render_to_html(self.html_template, self.get_context(context))
+    def get_body_html(self, context=False):
+        return self.render_to_html(
+            self.html_template,
+            self.get_context(context)
+            )
 
     #
     # Render the email to the TXT version
     #
     def get_body_txt(self, context=False):
-        return self.render_to_html(self.text_template, self.get_context(context))
+        return self.render_to_html(
+            self.text_template,
+            self.get_context(context)
+            )
 
     #
     # Render the email to the PDF version
     #
     def get_body_pdf(self, context=False):
-        return self.render_to_html(self.pdf_template, self.get_context(context))
+        return self.render_to_html(
+            self.pdf_template,
+            self.get_context(context)
+            )
 
     def get_subject(self):
         return self.subject
 
-    def send(self, force_now=False, log_id = None):
+    def send(self, force_now=False, log_id=None):
 
         if force_now or not cotimail_settings.COTIMAIL_QUEUE_MAIL:
             self._process_and_send()
             if cotimail_settings.COTIMAIL_LOG_MAIL:
-                self.log(status='SENT', log_id = log_id)
+                self.log(status='SENT', log_id=log_id)
         else:
-            self.log(status='QUEUED', log_id = log_id)
+            self.log(status='QUEUED', log_id=log_id)
 
-    def queue(self, log_id = None):
-        self.log(status='QUEUED', log_id = log_id)
+    def queue(self, log_id=None):
+        self.log(status='QUEUED', log_id=log_id)
 
-    def save(self, log_id = None):
-        log = self.log(status='SAVED', log_id = log_id)
+    def save(self, log_id=None):
+        log = self.log(status='SAVED', log_id=log_id)
         return log.id
 
-    def log(self, status, log_id = None):
+    def log(self, status, log_id=None):
         pickled_notice = base64.b64encode(pickle.dumps(self))
         if log_id:
             email_log = EmailLog.object.get(id=log_id)
@@ -174,7 +188,6 @@ class Notice(object):
 
         return email_log
 
-
     def _process_and_send(self):
 
         if cotimail_settings.RECIPIENTS_OVERRIDE:
@@ -195,18 +208,19 @@ class Notice(object):
 
         if self.attachments:
             for attachment in self.attachments:
-                if attachment.has_key('file') and attachment.has_key('filename'):
-                    msg.attach(attachment['filename'], attachment['file'], attachment['content_type'])
+                if 'file' in attachment and 'filename' in attachment:
+                    msg.attach(
+                        attachment['filename'],
+                        attachment['file'],
+                        attachment['content_type']
+                        )
                 else:
-                    msg.attach_file(attachment['file_path'], attachment['content_type'])
+                    msg.attach_file(
+                        attachment['file_path'],
+                        attachment['content_type']
+                        )
 
         # Send the message
         response = msg.send()
 
         return response
-
-
-
-
-
-
