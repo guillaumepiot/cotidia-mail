@@ -1,23 +1,14 @@
-import pickle, datetime, base64, json
-
-import django
+import pickle
+import datetime
+import base64
+import json
+import codecs
 
 from distutils.version import StrictVersion
-from django.db import models 
-from django.utils.translation import ugettext_lazy as _ 
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-
-
-####################################################
-# Support for older versions of django             #
-# GenericForeignKey moved from .generic to .fields #
-####################################################
-
-if StrictVersion(django.get_version()) >= StrictVersion('1.8'):
-    from django.contrib.contenttypes.fields import GenericForeignKey
-else:
-    from django.contrib.contenttypes.generic import GenericForeignKey
-
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 EMAIL_LOG_STATUS = (
     ('QUEUED', 'Queued'),
@@ -96,23 +87,10 @@ class EmailLog(models.Model):
             return []
 
     def get_object(self):
-        from .views import _getNoticeClass
-        context = self.get_context_dict()
-
-        noticeClass = _getNoticeClass(self.identifier)
-
-        notice = noticeClass(
-                sender = self.sender,
-                # A list of recipients emails
-                recipients = self.get_recipients(),
-                context = context,
-            )
+        notice = pickle.loads(
+            codecs.decode(self.pickled_data.encode(), "base64")
+        )
         return notice
 
     def get_context_dict(self):
         return json.loads(self.context_json)
-
-
-
-
-

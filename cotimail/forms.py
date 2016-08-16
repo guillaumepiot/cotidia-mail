@@ -42,7 +42,7 @@ class NoticeForm(BetterForm):
         # Go through each fieldset
         for fieldset in self.json_fields:
 
-            fieldset_id = slugify(unicode(fieldset['fieldset'])).replace('-','_')
+            fieldset_id = slugify(fieldset['fieldset']).replace('-','_')
             _fields = []
             for field in fieldset['fields']:
 
@@ -62,7 +62,7 @@ class NoticeForm(BetterForm):
                 field_required = field['required']
 
                 # Create a new form field
-                
+
                 kwargs = {
                     'required': field_required,
                     'label': field_label
@@ -102,7 +102,7 @@ class NoticeForm(BetterForm):
         #         mask_data = json.loads(self.instance.content)
         #     except:
         #         mask_data = None
-                
+
         #     if mask_data:
 
         #         # Go through each fieldset
