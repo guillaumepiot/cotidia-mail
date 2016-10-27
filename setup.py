@@ -16,6 +16,7 @@ setup(
             'templates/notice/*.txt',
         ]
     },
+    namespace_packages=['cotidia'],
     include_package_data=True,
     install_requires=[
         'django-form-utils==1.0.3',
