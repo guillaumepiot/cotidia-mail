@@ -122,8 +122,6 @@ class Notice(object):
     # Render the email to the HTML version
     #
     def get_body_html(self, context=False):
-        print("Notice context", self.context)
-        print("Notice get_context_dict", self.get_context_dict())
         return self.render_to_html(
             self.html_template,
             self.get_context(context)

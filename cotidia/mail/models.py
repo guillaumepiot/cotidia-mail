@@ -99,6 +99,6 @@ class EmailLog(models.Model):
         # Pass the saved context to the notice directly
         if self.context_json:
             context = json.loads(self.context_json)
-            notice.context = context
+            notice.context.update(context)
 
         return notice
