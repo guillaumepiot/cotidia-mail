@@ -4,7 +4,7 @@
 
 {% block toolbar %}
     {% if perms.cotimail.change_emaillog %}
-    <a href="{% url 'cotimail:logs' %}"
+    <a href="{% url 'mail-admin:logs' %}"
         class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
         <span class="fa fa-file-text-o"></span> {% trans "View email logs" %}
     </a>
@@ -31,10 +31,10 @@
             </table>
         </div>
         <div class="content__inner">
-            <a href="{% url 'cotimail:email_preview' log.id %}" class="btn btn--primary">
+            <a href="{% url 'mail-admin:email_preview' log.id %}" class="btn btn--primary">
                 {% trans "Preview" %}
             </a>
-            <a href="{% url 'cotimail:logs' %}" class="btn btn--transparent">
+            <a href="{% url 'mail-admin:logs' %}" class="btn btn--transparent">
                 {% trans "Back" %}
             </a>
         </div>

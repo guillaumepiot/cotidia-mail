@@ -5,7 +5,7 @@
 
 {% block toolbar %}
     {% if perms.cotimail.change_emaillog %}
-    <a href="{% url 'cotimail:logs' %}"
+    <a href="{% url 'mail-admin:logs' %}"
         class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
         <span class="fa fa-file-text-o"></span> {% trans "View email logs" %}
     </a>
@@ -29,12 +29,12 @@
             <td class="table-cell">{{notice.name}}</td>
             <td class="table-cell">
                 {% if notice.html_template %}
-                    <a href="{% url 'cotimail:template_preview_html' notice.identifier %}">HTML</a> | 
+                    <a href="{% url 'mail-admin:template_preview_html' notice.identifier %}">HTML</a> | 
                 {% endif %}
-                <a href="{% url 'cotimail:template_preview_text' notice.identifier 'text' %}">TXT</a>
+                <a href="{% url 'mail-admin:template_preview_text' notice.identifier 'text' %}">TXT</a>
             </td>
             <td class="table-cell">
-                <a href="{% url 'cotimail:new_email' notice.identifier %}"
+                <a href="{% url 'mail-admin:new_email' notice.identifier %}"
                     class="btn btn--small btn--create">
                     <span class="fa fa-plus"></span>
                     {% trans "New email" %}

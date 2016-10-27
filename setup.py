@@ -2,7 +2,7 @@ import os
 from distutils.core import setup
 
 
-VERSION = __import__("cotimail").VERSION
+VERSION = "1.0"
 
 CLASSIFIERS = [
     'Framework :: Django',
@@ -25,7 +25,7 @@ root_dir = os.path.dirname(__file__)
 if root_dir:
     os.chdir(root_dir)
 
-for dirpath, dirnames, filenames in os.walk('cotimail'):
+for dirpath, dirnames, filenames in os.walk('cotidia.mail'):
     # Ignore dirnames that start with '.'
     for i, dirname in enumerate(dirnames):
         if dirname.startswith('.'):
@@ -42,15 +42,14 @@ for dirpath, dirnames, filenames in os.walk('cotimail'):
 
 
 setup(
-    name="cotimail",
-    description="A Django transaction email manager.",
+    name="cotidia-mail",
+    description="Transaction email manager.",
     version=VERSION,
     author="Guillaume Piot",
     author_email="guillaume@cotidia.com",
-    url="https://bitbucket.org/guillaumepiot/cotimail",
-    package_dir={'cotimail': 'cotimail'},
+    url="https://code.cotidia.com/cotidia/mail/",
     packages=packages,
-    package_data={'cotimail': data_files},
+    package_data={'cotidia.mail': data_files},
     include_package_data=True,
     install_requires=install_requires,
     classifiers=CLASSIFIERS,

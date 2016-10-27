@@ -6,8 +6,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.utils.timezone import now
 
-from cotimail import settings as cotimail_settings
-from cotimail.models import EmailLog
+from cotidia.mail import settings as cotimail_settings
+from cotidia.mail.models import EmailLog
 
 # Note about custom notice
 # All notice classes name must ends with 'Notice', have a unique 'identifer'
@@ -122,6 +122,8 @@ class Notice(object):
     # Render the email to the HTML version
     #
     def get_body_html(self, context=False):
+        print("Notice context", self.context)
+        print("Notice get_context_dict", self.get_context_dict())
         return self.render_to_html(
             self.html_template,
             self.get_context(context)

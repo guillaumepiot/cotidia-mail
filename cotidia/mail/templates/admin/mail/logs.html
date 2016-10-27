@@ -4,7 +4,7 @@
 
 {% block toolbar %}
     {% if perms.app.add_model %}
-    <a href="{% url 'cotimail:list' %}"
+    <a href="{% url 'mail-admin:list' %}"
         class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
         <span class="fa fa-file-image-o"></span> {% trans "Email templates" %}
     </a>
@@ -26,12 +26,12 @@
                     <th class="table-head-cell">{% trans "Actions" %}</th>
                 </tr>
                 {% for log in logs %}
-                <tr class="table-row" onClick="window.location = '{% url 'cotimail:email_preview' log.id %}'">
+                <tr class="table-row" onClick="window.location = '{% url 'mail-admin:email_preview' log.id %}'">
                     <td class="table-cell">{{log.name}}</td>
                     <td class="table-cell">{% for r in log.get_recipients %}
                         <a href="mailto:{{r}}">{{r}}</a>
                     {% endfor %}</td>
-                    <td class="table-cell"><a href="{% url 'cotimail:log_context' log.id %}">{% trans "View context" %}</a></td>
+                    <td class="table-cell"><a href="{% url 'mail-admin:log_context' log.id %}">{% trans "View context" %}</a></td>
                     <td class="table-cell">{{log.date_sent}}</td>
                     <td class="table-cell">
                         {% if log.status == 'SENT' %}
@@ -43,7 +43,7 @@
                         {% endif %}
                     </td>
                     <td class="table-cell">
-                        <a href="{% url 'cotimail:email_preview' log.id %}">Preview</a>
+                        <a href="{% url 'mail-admin:email_preview' log.id %}">Preview</a>
                     </td>
                 </tr>
                 {% empty %}
@@ -76,7 +76,7 @@
                                 {% endif %}
                             {% endfor %}
                             <input type="submit" class="btn btn--primary" value="Filter" />
-                            <a class="btn btn--transparent" href="{% url 'cotimail:logs' %}">
+                            <a class="btn btn--transparent" href="{% url 'mail-admin:logs' %}">
                                 {% trans "Reset" %}
                             </a>
                         </form>
@@ -86,5 +86,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
-
+{% endblock %}

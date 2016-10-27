@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from cotimail import views
+from cotidia.mail import views
 
 urlpatterns = [
     #
@@ -18,20 +18,20 @@ urlpatterns = [
         views.new_email,
         name="new_email"),
     url(
-        r'^edit/(?P<id>[-\d]+)/$',
+        r'^edit/(?P<notice_id>[-\d]+)/$',
         views.edit_email,
         name="edit_email"),
     url(
-        r'^preview/(?P<id>[-\d]+)/$',
+        r'^preview/(?P<notice_id>[-\d]+)/$',
         views.email_preview,
         name="email_preview"),
     url(
-        r'^preview/standalone/(?P<id>[-\d]+)/$',
+        r'^preview/standalone/(?P<notice_id>[-\d]+)/$',
         views.email_preview_standalone,
         name="email_preview_standalone"),
     url(
-        r'^sent/(?P<id>[-\d]+)/',
-        views.email_sent,
+        r'^send/(?P<notice_id>[-\d]+)/',
+        views.email_send,
         name="email_sent"),
     url(
         r'^(?P<log_id>[\d]+)/$',

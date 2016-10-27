@@ -1,10 +1,8 @@
 import pickle
 import datetime
-import base64
 import json
 import codecs
 
-from distutils.version import StrictVersion
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -16,6 +14,7 @@ EMAIL_LOG_STATUS = (
     ('FAILED', 'Failed'),
     ('SAVED', 'Saved'),
 )
+
 
 class EmailLog(models.Model):
 
@@ -34,17 +33,23 @@ class EmailLog(models.Model):
     context_json = models.TextField(null=True)
 
     # The communication details
-    recipients = models.TextField(help_text='A comma separated list of recipients')
+    recipients = models.TextField(
+        help_text='A comma separated list of recipients')
     sender = models.EmailField(max_length=250)
     reply_to = models.EmailField(blank=True)
 
     # Content-object field
     # You can here hook any object the email may relate too
-    content_type = models.ForeignKey(ContentType,
-            verbose_name=_('content type'),
-            related_name="content_type_set_for_%(class)s", blank=True, null=True)
+    content_type = models.ForeignKey(
+        ContentType,
+        verbose_name=_('content type'),
+        related_name="content_type_set_for_%(class)s",
+        blank=True,
+        null=True)
     object_pk = models.TextField(_('object ID'), blank=True, null=True)
-    content_object = GenericForeignKey(ct_field="content_type", fk_field="object_pk")
+    content_object = GenericForeignKey(
+        ct_field="content_type",
+        fk_field="object_pk")
 
     # Datetime stamp
     date_created = models.DateTimeField(auto_now_add=True)
@@ -90,7 +95,10 @@ class EmailLog(models.Model):
         notice = pickle.loads(
             codecs.decode(self.pickled_data.encode(), "base64")
         )
-        return notice
 
-    def get_context_dict(self):
-        return json.loads(self.context_json)
+        # Pass the saved context to the notice directly
+        if self.context_json:
+            context = json.loads(self.context_json)
+            notice.context = context
+
+        return notice

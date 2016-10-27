@@ -15,7 +15,7 @@
 {% block content %}
 <div class="content__inner">
     <p class="breadcrumb">
-        <a href="{% url 'cotimail:list' %}">{% trans "Email templates" %}</a>  
+        <a href="{% url 'mail-admin:list' %}">{% trans "Email templates" %}</a>  
         &nbsp;<span class="fa fa-angle-right"></span>&nbsp;
         {% if log %}
             {% trans "Edit email" %}
@@ -91,7 +91,7 @@
 
     <div class="content__inner">
         <input type="submit" value="{% trans 'Save' %}" class="btn btn--primary" />
-        <a class="btn btn--transparent" href="{% url 'cotimail:list' %}">{% trans "Cancel" %}</a>
+        <a class="btn btn--transparent" href="{% url 'mail-admin:list' %}">{% trans "Cancel" %}</a>
     </div>   
 </form>
 {% endblock %} 
