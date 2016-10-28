@@ -188,8 +188,15 @@ def email_preview_standalone(
 
     notice = log.get_object()
 
-    body_html = notice.get_body_html()
-    body_txt = linebreaksbr(notice.get_body_txt())
+    if notice.html_template:
+        body_html = notice.get_body_html()
+    else:
+        body_html = ""
+
+    if notice.text_template:
+        body_txt = linebreaksbr(notice.get_body_txt())
+    else:
+        body_txt = ""
 
     context = {
         "log": log,
