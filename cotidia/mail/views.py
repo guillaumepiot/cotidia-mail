@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django import forms
 from django.contrib import messages
 
-from cotidia.mail import settings as cotimail_settings
+from cotidia.mail import settings as mail_settings
 from cotidia.mail.models import EmailLog, EMAIL_LOG_STATUS
 from cotidia.mail.forms import NoticeForm
 from cotidia.mail.notice import Notice
@@ -85,7 +85,7 @@ def logs(request, template='admin/mail/logs.html'):
 
 
 @login_required
-@permission_required('cotimail.add_emaillog')
+@permission_required('mail.add_emaillog')
 def new_email(
         request,
         slug,
@@ -130,7 +130,7 @@ def new_email(
 
 
 @login_required
-@permission_required('cotimail.change_emaillog')
+@permission_required('mail.change_emaillog')
 def edit_email(
         request,
         notice_id,
