@@ -1,5 +1,13 @@
 {% if body_html %}
 {{ body_html }}
 {% else %}
-{{ body_txt }}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Title of the document</title>
+    </head>
+    <body>
+        {{ body_txt }}
+    </body>
+</html>
 {% endif %}
