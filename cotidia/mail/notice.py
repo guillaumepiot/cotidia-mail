@@ -115,6 +115,7 @@ class Notice(object):
             return {}
 
     def render_to_html(self, template, context):
+        print('template', template)
         template = get_template(template)
         return template.render(context)
 
