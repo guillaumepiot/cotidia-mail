@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
+from cotidia.mail.utils import getNoticeClass
+
 EMAIL_LOG_STATUS = (
     ('QUEUED', 'Queued'),
     ('SENT', 'Sent'),
@@ -92,9 +94,18 @@ class EmailLog(models.Model):
             return []
 
     def get_object(self):
-        notice = pickle.loads(
-            codecs.decode(self.pickled_data.encode(), "base64")
-        )
+        try:
+            notice = pickle.loads(
+                codecs.decode(self.pickled_data.encode(), "base64")
+            )
+        except:
+            notice_class = getNoticeClass(self.identifier)
+            notice = notice_class(
+                subject=self.subject,
+                recipients=self.recipients,
+                sender=self.sender,
+                reply_to=self.reply_to,
+            )
 
         # Pass the saved context to the notice directly
         if self.context_json:

@@ -2,10 +2,10 @@ import inspect
 import importlib
 
 from cotidia.mail import settings as mail_settings
-from cotidia.mail.notice import Notice
 
 
 def getNoticeClass(slug, apps=mail_settings.COTIMAIL_APPS):
+    from cotidia.mail.notice import Notice
     for app_module in apps:
         # Import module specify in the notification apps setting
         module = importlib.import_module(app_module)
@@ -19,6 +19,7 @@ def getNoticeClass(slug, apps=mail_settings.COTIMAIL_APPS):
 
 
 def getNoticeNames(apps=mail_settings.COTIMAIL_APPS):
+    from cotidia.mail.notice import Notice
     NOTICE_NAMES = []
 
     for app_module in apps:
@@ -36,6 +37,7 @@ def getNoticeNames(apps=mail_settings.COTIMAIL_APPS):
 
 
 def getNoticeMap(apps=mail_settings.COTIMAIL_APPS):
+    from cotidia.mail.notice import Notice
     NOTICE_MAP = []
 
     for app_module in apps:
