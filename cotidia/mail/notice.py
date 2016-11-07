@@ -1,6 +1,7 @@
 import json
 import pickle
 import base64
+import os.path
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
@@ -146,7 +147,13 @@ class Notice(object):
             )
 
     def get_subject(self):
-        return self.subject
+        # Test if the subject is a path to a template
+        try:
+            template = get_template(self.subject)
+            subject = template.render({}).strip()
+            return subject
+        except:
+            return self.subject
 
     def send(self, force_now=False, log_id=None):
 
