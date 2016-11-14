@@ -46,7 +46,7 @@ def getNoticeMap(apps=mail_settings.COTIMAIL_APPS):
 
         # Browse through all the classes that extend Notice
         for name, obj in inspect.getmembers(module, inspect.isclass):
-            if issubclass(obj, Notice):
+            if issubclass(obj, Notice) and obj is not Notice:
                 NOTICE_MAP.append(obj())
 
     NOTICE_MAP = sorted(NOTICE_MAP, key=lambda obj: obj.name)
