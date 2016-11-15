@@ -44,11 +44,13 @@ class LogFilter(django_filters.FilterSet):
     identifier = django_filters.ChoiceFilter(
         label="Notice type",
         choices=NOTICE_NAME_CHOICES,
-        widget=forms.Select(attrs={'class': 'form__select'}))
+        widget=forms.Select(attrs={'class': 'form__select'}),
+        help_text="")
 
     status = django_filters.ChoiceFilter(
         choices=STATUS_CHOICES,
-        widget=forms.Select(attrs={'class': 'form__select'}))
+        widget=forms.Select(attrs={'class': 'form__select'}),
+        help_text="")
 
     class Meta:
         model = EmailLog
