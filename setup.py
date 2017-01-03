@@ -19,8 +19,9 @@ setup(
     namespace_packages=['cotidia'],
     include_package_data=True,
     install_requires=[
-        'django-form-utils==1.0.3',
-        'django-filter==0.13.0'
+        'django-form-utils>=1.0.3',
+        'django-filter>=0.13.0',
+        'djrill>=2.1.0'
     ],
     classifiers=[
         'Framework :: Django',
