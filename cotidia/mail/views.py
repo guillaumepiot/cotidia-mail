@@ -64,7 +64,7 @@ def logs(request, template='admin/mail/logs.html'):
 
     log_filter = LogFilter(request.GET, queryset=logs)
 
-    paginator = Paginator(log_filter, 25)  # Show 25 contacts per page
+    paginator = Paginator(log_filter.queryset, 25)  # Show 25 contacts per page
 
     page = request.GET.get('page')
     try:
