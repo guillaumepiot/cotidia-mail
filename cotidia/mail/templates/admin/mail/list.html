@@ -13,7 +13,7 @@
     <span class="toolbar__title">{% trans "Cotimail" %}</span>
 {% endblock toolbar %}
 
-{% block content %}
+{% block page_content %}
 <div class="content__inner">
     <table class="table">
         <thead>
@@ -29,7 +29,7 @@
             <td class="table-cell">{{notice.name}}</td>
             <td class="table-cell">
                 {% if notice.html_template %}
-                    <a href="{% url 'mail-admin:template_preview_html' notice.identifier %}">HTML</a> | 
+                    <a href="{% url 'mail-admin:template_preview_html' notice.identifier %}">HTML</a> |
                 {% endif %}
                 <a href="{% url 'mail-admin:template_preview_text' notice.identifier 'text' %}">TXT</a>
             </td>
@@ -49,4 +49,4 @@
         </tbody>
     </table>
 </div>
-{% endblock %} 
+{% endblock %}
