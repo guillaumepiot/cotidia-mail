@@ -101,6 +101,7 @@ class Notice(object):
 
     # get context json
     def get_context_json(self):
+        print("JSON context", self.get_context_dict())
         return json.dumps(self.get_context_dict())
 
     def get_context(self, context=False):
@@ -126,7 +127,7 @@ class Notice(object):
         return self.render_to_html(
             self.html_template,
             self.get_context(context)
-            )
+        )
 
     #
     # Render the email to the TXT version
@@ -135,7 +136,7 @@ class Notice(object):
         return self.render_to_html(
             self.text_template,
             self.get_context(context)
-            )
+        )
 
     #
     # Render the email to the PDF version
@@ -144,7 +145,7 @@ class Notice(object):
         return self.render_to_html(
             self.pdf_template,
             self.get_context(context)
-            )
+        )
 
     def get_subject(self):
         # Test if the subject is a path to a template
@@ -208,7 +209,7 @@ class Notice(object):
             from_email=self.sender,
             to=recipients,
             reply_to=self.reply_to,
-            headers=self.headers # optional extra headers
+            headers=self.headers  # optional extra headers
         )
         if self.html_template:
             msg.attach_alternative(self.get_body_html(), "text/html")
@@ -220,12 +221,12 @@ class Notice(object):
                         attachment['filename'],
                         attachment['file'],
                         attachment['content_type']
-                        )
+                    )
                 else:
                     msg.attach_file(
                         attachment['file_path'],
                         attachment['content_type']
-                        )
+                    )
 
         # Send the message
         response = msg.send()

@@ -1,33 +1,32 @@
-import json
 from django import forms
 from django.utils.text import slugify
-from django.utils.translation import ugettext_lazy as _
 
 from form_utils.forms import BetterForm
 
 FIELD_CLASS_MAP = {
     'charfield': {
-        'field_class':forms.CharField,
-        'field_widget':forms.TextInput,
-        'max_length':250,
+        'field_class': forms.CharField,
+        'field_widget': forms.TextInput,
+        'max_length': 250,
     },
     'textfield': {
-        'field_class':forms.CharField,
-        'field_widget':forms.Textarea,
-        'max_length':50000,
+        'field_class': forms.CharField,
+        'field_widget': forms.Textarea,
+        'max_length': 50000,
     },
     'choicefield': {
-        'field_class':forms.ChoiceField,
-        'field_widget':forms.Select,
-        'choices': (('','No choices'),)
+        'field_class': forms.ChoiceField,
+        'field_widget': forms.Select,
+        'choices': (('', 'No choices'),)
     }
 }
+
 
 class NoticeForm(BetterForm):
     email = forms.CharField(
         max_length=250,
         widget=forms.TextInput(attrs={'class': 'form__text'})
-        )
+    )
 
     def __init__(self, json_fields, *args, **kwargs):
 
@@ -42,7 +41,7 @@ class NoticeForm(BetterForm):
         # Go through each fieldset
         for fieldset in self.json_fields:
 
-            fieldset_id = slugify(fieldset['fieldset']).replace('-','_')
+            fieldset_id = slugify(fieldset['fieldset']).replace('-', '_')
             _fields = []
             for field in fieldset['fields']:
 
@@ -94,54 +93,5 @@ class NoticeForm(BetterForm):
                 # Push the field name to the temporary field list
                 _fields.append(field_name)
 
-            fieldset = (fieldset['fieldset'],{'fields':_fields, 'legend':fieldset['fieldset']})
+            fieldset = (fieldset['fieldset'], {'fields': _fields, 'legend': fieldset['fieldset']})
             self._fieldsets.append(fieldset)
-
-        # if self.instance:
-        #     try:
-        #         mask_data = json.loads(self.instance.content)
-        #     except:
-        #         mask_data = None
-
-        #     if mask_data:
-
-        #         # Go through each fieldset
-        #         for fieldset in self.json_fields:
-        #             fieldset_id = slugify(fieldset['fieldset']).replace('-','_')
-        #             for field in fieldset['fields']:
-
-        #                 # Get the name of the field
-        #                 field_name = '%s_%s' % (fieldset_id,field['name'])
-
-        #                 # Set the initial value from the current data
-        #                 self.fields[field_name].initial = mask_data.get(field_name, '')
-
-
-    # def save(self, *args, **kwargs):
-    #     super(NoticeForm, self).save(*args, **kwargs)
-
-    #     mask_data = {}
-
-    #     # Create the mask data for each field
-    #     for fieldset in self.json_fields:
-    #         fieldset_id = slugify(fieldset['fieldset']).replace('-','_')
-    #         for field in fieldset['fields']:
-
-    #             # Get the field type
-    #             field_type = field['type']
-    #             # Get the name of the field
-    #             field_name = '%s_%s' % (fieldset_id,field['name'])
-
-    #             if field_type in ['pagelinkfield']:
-    #                 if self.cleaned_data[field_name]:
-    #                     page = self.cleaned_data[field_name]
-    #                     mask_data[field_name] = page.id
-    #             # elif field_type in ['imagefield', 'filefield']:
-    #             #     mask_data[field_name] = self.cleaned_data[field_name].name
-    #             else:
-    #                 mask_data[field_name] = self.cleaned_data[field_name]
-
-    #     self.instance.content = json.dumps(mask_data)
-    #     self.instance.save()
-
-    #     return self.instance

@@ -10,10 +10,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django import forms
 from django.contrib import messages
 
-from cotidia.mail import settings as mail_settings
 from cotidia.mail.models import EmailLog, EMAIL_LOG_STATUS
 from cotidia.mail.forms import NoticeForm
-from cotidia.mail.notice import Notice
 from cotidia.mail.utils import getNoticeClass, getNoticeMap, getNoticeNames
 
 
@@ -58,6 +56,7 @@ class LogFilter(django_filters.FilterSet):
 
 
 @login_required
+@permission_required('mail.change_emaillog')
 def logs(request, template='admin/mail/logs.html'):
 
     logs = EmailLog.objects.all()
@@ -81,7 +80,7 @@ def logs(request, template='admin/mail/logs.html'):
         'filter': log_filter,
         'logs': logs,
         'is_paginated': True
-        }
+    }
 
     return render(request, template, context)
 
@@ -95,18 +94,18 @@ def new_email(
         redirect_url='mail-admin:email_preview'):
     """View to create a new notice instance."""
 
-    noticeClass = getNoticeClass(slug)
+    notice_class = getNoticeClass(slug)
 
-    if noticeClass is None:
+    if notice_class is None:
         raise Http404('Notice could not be found')
 
-    notice = noticeClass()
+    notice = notice_class()
 
     if request.method == "POST":
         form = NoticeForm(
             data=request.POST,
-            json_fields=noticeClass().get_context_editable()
-            )
+            json_fields=notice_class().get_context_editable()
+        )
         if form.is_valid():
 
             clean = form.cleaned_data
@@ -114,7 +113,7 @@ def new_email(
             if not clean.get('email'):
                 raise Exception('You must have an email field')
 
-            notice = noticeClass(
+            notice = notice_class(
                 recipients=clean['email'].split(','),
                 notice=slug,
                 context=clean,
@@ -124,9 +123,9 @@ def new_email(
             return HttpResponseRedirect(reverse(redirect_url, args=(log_id,)))
     else:
         form = NoticeForm(
-            initial=noticeClass.default_context,
-            json_fields=noticeClass().get_context_editable()
-            )
+            initial=notice_class.default_context,
+            json_fields=notice_class().get_context_editable()
+        )
 
     return render(request, template, {'form': form, 'notice': notice})
 
@@ -147,7 +146,7 @@ def edit_email(
         form = NoticeForm(
             data=request.POST,
             json_fields=notice.get_context_editable()
-            )
+        )
         if form.is_valid():
             clean = form.cleaned_data
 
@@ -161,12 +160,13 @@ def edit_email(
         form = NoticeForm(
             initial=notice.context,
             json_fields=notice.get_context_editable()
-            )
+        )
 
     return render(request, template, {'form': form, 'log': log})
 
 
 @login_required
+@permission_required('mail.change_emaillog')
 def email_preview(
         request,
         notice_id,
@@ -179,11 +179,11 @@ def email_preview(
 
 
 @login_required
+@permission_required('mail.change_emaillog')
 def email_preview_standalone(
         request,
         notice_id,
-        template='admin/mail/email_preview_standalone.html'
-        ):
+        template='admin/mail/email_preview_standalone.html'):
     """View to preview a notice with only the html email, no page wrapping."""
 
     log = EmailLog.objects.get(id=notice_id)
@@ -210,6 +210,7 @@ def email_preview_standalone(
 
 
 @login_required
+@permission_required('mail.change_emaillog')
 def email_send(request, notice_id, redirect_url='mail-admin:logs'):
     """Send the notice email."""
 
@@ -221,15 +222,16 @@ def email_send(request, notice_id, redirect_url='mail-admin:logs'):
 
 
 @login_required
+@permission_required('mail.change_emaillog')
 def preview(request, slug, text=False, template='admin/mail/preview.html'):
     """View to preview a notice template."""
 
-    noticeClass = getNoticeClass(slug)
+    notice_class = getNoticeClass(slug)
 
-    if noticeClass is None:
+    if notice_class is None:
         raise Http404('Notice could not be found')
 
-    notice = noticeClass()
+    notice = notice_class()
 
     if notice.html_template:
         body_html = notice.get_body_html()
