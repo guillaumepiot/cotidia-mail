@@ -1,6 +1,6 @@
 from django.conf import settings
 
-COTIMAIL_REPLY_EMAIL = getattr(settings, 'COTIMAIL_REPLY_EMAIL', ['No-reply <noreply@mywebsite.com>'])
+COTIMAIL_REPLY_EMAIL = getattr(settings, 'COTIMAIL_REPLY_EMAIL', 'No-reply <noreply@mywebsite.com>')
 COTIMAIL_SENDER = getattr(settings, 'COTIMAIL_SENDER', 'App <info@example.com>')
 COTIMAIL_APPS = getattr(settings, 'COTIMAIL_APPS', [])
 COTIMAIL_QUEUE_MAIL = getattr(settings, 'COTIMAIL_QUEUE_MAIL', False)
@@ -18,4 +18,4 @@ COTIMAIL_LOCK_WAIT_TIMEOUT = getattr(settings, 'COTIMAIL_LOCK_WAIT_TIMEOUT', -1)
 # Set the value as a Python list of emails to enable the behaviour
 #
 RECIPIENTS_OVERRIDE = getattr(settings, 'COTIMAIL_RECIPIENTS_OVERRIDE', False)
-	
+

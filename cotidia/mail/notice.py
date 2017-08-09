@@ -101,7 +101,6 @@ class Notice(object):
 
     # get context json
     def get_context_json(self):
-        print("JSON context", self.get_context_dict())
         return json.dumps(self.get_context_dict())
 
     def get_context(self, context=False):
@@ -208,7 +207,7 @@ class Notice(object):
             body=self.get_body_txt(),
             from_email=self.sender,
             to=recipients,
-            reply_to=self.reply_to,
+            reply_to=[self.reply_to],
             headers=self.headers  # optional extra headers
         )
         if self.html_template:
