@@ -112,4 +112,10 @@ class EmailLog(models.Model):
             context = json.loads(self.context_json)
             notice.context.update(context)
 
+        # Override log values
+        notice.recipients = self.get_recipients()
+        notice.subject = self.subject
+        notice.sender = self.sender
+        notice.reply_to = self.reply_to
+
         return notice
