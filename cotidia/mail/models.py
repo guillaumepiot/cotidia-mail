@@ -58,8 +58,8 @@ class EmailLog(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     date_sent = models.DateTimeField(blank=True, null=True)
 
-    def __unicode__(self):
-        return u'%s' % self.subject
+    def __str__(self):
+        return self.subject
 
     class Meta:
         verbose_name = u'Email log'

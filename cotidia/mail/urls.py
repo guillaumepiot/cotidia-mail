@@ -14,17 +14,21 @@ urlpatterns = [
     # Create, edit and preview notices
     #
     url(
-        r'^new/(?P<slug>[-\w]+)/$',
+        r'^new/(?P<slug>[-\w]+)$',
         views.new_email,
         name="new_email"),
     url(
-        r'^edit/(?P<notice_id>[-\d]+)/$',
+        r'^edit/(?P<notice_id>[-\d]+)$',
         views.edit_email,
-        name="edit_email"),
+        name="emaillog-update"),
+    url(
+        r'^delete/(?P<pk>[-\d]+)$',
+        views.EmailLogDelete.as_view(),
+        name="emaillog-delete"),
     url(
         r'^preview/(?P<notice_id>[-\d]+)/$',
         views.email_preview,
-        name="email_preview"),
+        name="emaillog-detail"),
     url(
         r'^preview/standalone/(?P<notice_id>[-\d]+)/$',
         views.email_preview_standalone,
@@ -39,8 +43,12 @@ urlpatterns = [
         name="log_context"),
     url(
         r'^logs/$',
-        views.logs,
+        views.EmailLogList.as_view(),
         name="logs"),
+    url(
+        r'^logs/$',
+        views.EmailLogList.as_view(),
+        name="emaillog-list"),
 
     #
     # Notice Template Preview in HTML and TEXT versions

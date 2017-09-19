@@ -14,6 +14,8 @@ from cotidia.mail.models import EmailLog, EMAIL_LOG_STATUS
 from cotidia.mail.forms import NoticeForm
 from cotidia.mail.utils import getNoticeClass, getNoticeMap, getNoticeNames
 
+from cotidia.admin.views import AdminListView, AdminDeleteView
+
 
 @login_required
 def list(request, template='admin/mail/list.html'):
@@ -28,61 +30,35 @@ def log_context(request, log_id, template='admin/mail/log_context.html'):
     return render(request, template, {'log': log})
 
 
-STATUS_CHOICES = (
-    ('', 'Status'),
-) + EMAIL_LOG_STATUS
-
-NOTICE_NAME_CHOICES = (
-    ('', 'Template'),
-) + tuple(getNoticeNames())
-
-
-class LogFilter(django_filters.FilterSet):
-
+class EmailLogFilter(django_filters.FilterSet):
     identifier = django_filters.ChoiceFilter(
-        label="Notice type",
-        choices=NOTICE_NAME_CHOICES,
-        widget=forms.Select(attrs={'class': 'form__select'}),
-        help_text="")
-
+        choices=tuple(getNoticeNames()),
+        label="Name"
+    )
     status = django_filters.ChoiceFilter(
-        choices=STATUS_CHOICES,
-        widget=forms.Select(attrs={'class': 'form__select'}),
-        help_text="")
+        choices=EMAIL_LOG_STATUS,
+        label="Status"
+    )
 
     class Meta:
         model = EmailLog
         fields = ['identifier', 'status']
 
 
-@login_required
-@permission_required('mail.change_emaillog')
-def logs(request, template='admin/mail/logs.html'):
+class EmailLogList(AdminListView):
+    columns = (
+        ('Type', 'name'),
+        ('Recipients', 'recipients'),
+        ('Date sent', 'date_sent'),
+        ('Status', 'status'),
+    )
+    model = EmailLog
+    add_view = False
+    filterset = EmailLogFilter
 
-    logs = EmailLog.objects.all()
 
-    log_filter = LogFilter(request.GET, queryset=logs)
-
-    paginator = Paginator(log_filter.queryset, 25)  # Show 25 contacts per page
-
-    page = request.GET.get('page')
-    try:
-        logs = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        logs = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        logs = paginator.page(paginator.num_pages)
-
-    context = {
-        'logs': logs,
-        'filter': log_filter,
-        'logs': logs,
-        'is_paginated': True
-    }
-
-    return render(request, template, context)
+class EmailLogDelete(AdminDeleteView):
+    model = EmailLog
 
 
 @login_required
@@ -91,7 +67,7 @@ def new_email(
         request,
         slug,
         template='admin/mail/email_form.html',
-        redirect_url='mail-admin:email_preview'):
+        redirect_url='mail-admin:emaillog-detail'):
     """View to create a new notice instance."""
 
     notice_class = getNoticeClass(slug)
@@ -136,7 +112,7 @@ def edit_email(
         request,
         notice_id,
         template='admin/mail/email_form.html',
-        redirect_url='mail-admin:email_preview'):
+        redirect_url='mail-admin:emaillog-detail'):
     """Edit view for a notice instance."""
 
     log = EmailLog.objects.get(id=notice_id)

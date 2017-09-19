@@ -31,10 +31,10 @@
             </table>
         </div>
         <div class="content__inner">
-            <a href="{% url 'mail-admin:email_preview' log.id %}" class="btn btn--primary">
+            <a href="{% url 'mail-admin:emaillog-detail' log.id %}" class="btn btn--primary">
                 {% trans "Preview" %}
             </a>
-            <a href="{% url 'mail-admin:logs' %}" class="btn btn--transparent">
+            <a href="{% url 'mail-admin:emaillog-list' %}" class="btn btn--transparent">
                 {% trans "Back" %}
             </a>
         </div>

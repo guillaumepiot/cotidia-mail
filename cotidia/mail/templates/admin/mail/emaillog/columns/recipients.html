@@ -1,0 +1,3 @@
+{% for r in object.get_recipients %}
+    <a href="mailto:{{r}}">{{r}}</a>{% if not forloop.last %}, {% endif %}
+{% endfor %}

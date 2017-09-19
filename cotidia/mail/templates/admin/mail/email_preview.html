@@ -101,10 +101,10 @@
                         <a href="{% url 'mail-admin:email_sent' log.id %}" class="btn btn--primary pull-right">
                             {% trans "Send" %}
                         </a>
-                        <a href="{% url 'mail-admin:edit_email' log.id %}" class="btn btn--change">
+                        <a href="{% url 'mail-admin:emaillog-update' log.id %}" class="btn btn--change">
                             {% trans "Edit" %}
                         </a>
-                        <a href="{% url 'mail-admin:logs' %}" class="btn btn--transparent">
+                        <a href="{% url 'mail-admin:emaillog-list' %}" class="btn btn--transparent">
                             {% trans "Back" %}
                         </a>
                     </td>
