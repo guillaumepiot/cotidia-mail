@@ -21,7 +21,7 @@ setup(
     install_requires=[
         'django-form-utils>=1.0.3',
         'django-filter>=0.13.0',
-        'djrill>=2.1.0'
+        'django-anymail>=1.0'
     ],
     classifiers=[
         'Framework :: Django',
