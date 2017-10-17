@@ -7,8 +7,8 @@ COTIMAIL_QUEUE_MAIL = getattr(settings, 'COTIMAIL_QUEUE_MAIL', False)
 COTIMAIL_LOG_MAIL = getattr(settings, 'COTIMAIL_LOG_MAIL', True)
 
 # Mail queueing requires the log to track unsent mail, so we must force COTIMAIL_LOG_MAIL to be True if COTIMAIL_QUEUE_MAIL is True
-if COTIMAIL_QUEUE_MAIL == True:
-	COTIMAIL_LOG_MAIL = True
+if COTIMAIL_QUEUE_MAIL is True:
+    COTIMAIL_LOG_MAIL = True
 
 COTIMAIL_LOCK_WAIT_TIMEOUT = getattr(settings, 'COTIMAIL_LOCK_WAIT_TIMEOUT', -1)
 
