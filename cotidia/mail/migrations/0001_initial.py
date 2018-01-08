@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('date_updated', models.DateTimeField(auto_now=True)),
                 ('date_sent', models.DateTimeField(null=True, blank=True)),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType', verbose_name='content type', null=True, blank=True, related_name='content_type_set_for_emaillog')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', verbose_name='content type', null=True, blank=True, related_name='content_type_set_for_emaillog', on_delete=models.SET_NULL)),
             ],
             options={
                 'verbose_name_plural': 'Email logs',

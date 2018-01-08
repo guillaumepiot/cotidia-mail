@@ -47,7 +47,8 @@ class EmailLog(models.Model):
         verbose_name=_('content type'),
         related_name="content_type_set_for_%(class)s",
         blank=True,
-        null=True)
+        null=True,
+        on_delete=models.SET_NULL)
     object_pk = models.TextField(_('object ID'), blank=True, null=True)
     content_object = GenericForeignKey(
         ct_field="content_type",
