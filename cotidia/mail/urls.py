@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from cotidia.mail import views
 
+app_name = 'cotidia.mail'
+
 urlpatterns = [
     #
     # List all available notices

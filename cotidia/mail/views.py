@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.template.defaultfilters import linebreaksbr
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django import forms
 from django.contrib import messages
