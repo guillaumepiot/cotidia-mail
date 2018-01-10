@@ -20,7 +20,7 @@ setup(
     include_package_data=True,
     install_requires=[
         "django-form-utils==1.0.*",
-        "django-filter==1.0.*"
+        "django-filter==1.0.*",
         "django-anymail==1.0.*"
     ],
     classifiers=[
