@@ -55,6 +55,8 @@ class EmailLogList(AdminListView):
     model = EmailLog
     add_view = False
     filterset = EmailLogFilter
+    row_actions = ['view']
+    row_click_action = 'detail'
 
 
 class EmailLogDelete(AdminDeleteView):
