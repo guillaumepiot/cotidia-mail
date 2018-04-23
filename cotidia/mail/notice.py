@@ -7,7 +7,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.utils.timezone import now
 
-from anymail.exceptions import AnymailRecipientsRefused
+from anymail.exceptions import (
+    AnymailRecipientsRefused,
+    AnymailRequestsAPIError
+)
 
 from cotidia.mail import settings as cotimail_settings
 from cotidia.mail.models import EmailLog
@@ -235,4 +238,6 @@ class Notice(object):
             return response
         # Ignore refused response, probably spam
         except AnymailRecipientsRefused:
+            return None
+        except AnymailRequestsAPIError:
             return None
