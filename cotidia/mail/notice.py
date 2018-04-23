@@ -232,5 +232,10 @@ class Notice(object):
                         attachment['content_type']
                     )
 
-        response = msg.send()
-        return response
+        # Send the message
+        try:
+            response = msg.send()
+            return response
+        # Ignore refused response, probably spam
+        except AnymailRecipientsRefused:
+            return None
