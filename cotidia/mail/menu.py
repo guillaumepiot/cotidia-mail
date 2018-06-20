@@ -15,7 +15,7 @@ def admin_menu(context):
         {
             "text": "Logs",
             "url": reverse("mail-admin:logs"),
-            "icon": "file-text-o",
+            "icon": "file-alt",
             "permissions": [
                 "mail.add_emaillog",
                 "mail.change_emaillog"
