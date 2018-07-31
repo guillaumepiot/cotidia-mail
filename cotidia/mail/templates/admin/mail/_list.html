@@ -1,7 +1,11 @@
-{% extends "admin/generic/page/list.html" %}{% load i18n admin_toolbar_tags admin_list_tags %}
+{% extends "admin/page.html" %}{% load i18n %}
 {% block title %}
-    {{verbose_name}}
-{% endblock title %}
+    {% trans "Email templates" %}
+{% endblock %}
+
+{% block body_class %}
+    content--padded
+{% endblock body_class %}
 
 {% block content_title %}
     {% trans "Email templates" %}
@@ -15,17 +19,15 @@
     {% endif %}
 {% endblock content_actions %}
 
-{% block page_content %}
-{% include 'admin/generic/utils/head-filter.html' %}
-<div class="content__toolbar">
+{% block content_class %}content--sticky{% endblock content_class %}
 
-</div>
+{% block page_content %}
 <div class="content__body">
     <div class="content__inner">
         <div class="content__list">
             <table class="table table--admin-mobile-view">
                 <thead>
-                    <tr>
+                    <tr class="table-row">
                         <th class="table-head-cell">{% trans "Template name" %}</th>
                         <th class="table-head-cell">{% trans "Preview" %}</th>
                         <th class="table-head-cell">{% trans "Actions" %}</th>
@@ -33,15 +35,15 @@
                 </thead>
                 <tbody>
                 {% for notice in notice_map %}
-                <tr>
-                    <td>{{notice.name}}</td>
-                    <td>
+                <tr class="table-row">
+                    <td class="table-cell">{{notice.name}}</td>
+                    <td class="table-cell">
                         {% if notice.html_template %}
                             <a href="{% url 'mail-admin:template_preview_html' notice.identifier %}">HTML</a> |
                         {% endif %}
                         <a href="{% url 'mail-admin:template_preview_text' notice.identifier 'text' %}">TXT</a>
                     </td>
-                    <td>
+                    <td class="table-cell">
                         <a href="{% url 'mail-admin:new_email' notice.identifier %}"
                             class="btn btn--small btn--create">
                             <span class="fa fa-plus"></span>
@@ -50,22 +52,13 @@
                     </td>
                 </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="3">You have no notices setup yet.</td>
+                    <tr class="table-row">
+                        <td colspan="3" class="table-cell">You have no notices setup yet.</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            {% include 'admin/generic/list/list.html' %}
         </div>
     </div>
 </div>
-<div class="content__foot">
-    <div class="content__inner content-foot">
-        <div class="content-foot__left">
-            {% include 'admin/generic/pagination.html' %}
-        </div>
-        <div class="content-foot__right"></div>
-    </div>
-</div>
-{% endblock page_content %}
+{% endblock %}
