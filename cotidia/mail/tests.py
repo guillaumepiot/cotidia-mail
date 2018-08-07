@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test import TestCase
 from django.test.client import Client
 
-from cotimail.notice import Notice
+from cotidia.mail.notice import Notice
 
 class NoticeTest(TestCase):
 
