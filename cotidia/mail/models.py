@@ -101,6 +101,8 @@ class EmailLog(models.Model):
             )
         except:
             notice_class = getNoticeClass(self.identifier)
+            if notice_class is None:
+                raise Exception("Notice class with identifier {} is not found. Did you add the relevant app to COTIMAIL_APPS?".format(self.identifier))
             notice = notice_class(
                 subject=self.subject,
                 recipients=self.recipients,
