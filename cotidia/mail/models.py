@@ -36,9 +36,18 @@ class EmailLog(models.Model):
 
     # The communication details
     recipients = models.TextField(
-        help_text='A comma separated list of recipients')
+        help_text='A comma separated list of recipients'
+    )
     sender = models.EmailField(max_length=250)
     reply_to = models.EmailField(blank=True)
+    cc = models.TextField(
+        help_text='A comma separated list of cc',
+        null=True
+    )
+    bcc = models.TextField(
+        help_text='A comma separated list of bcc',
+        null=True
+    )
 
     # Content-object field
     # You can here hook any object the email may relate too

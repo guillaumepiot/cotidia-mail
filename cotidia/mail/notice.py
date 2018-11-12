@@ -41,6 +41,8 @@ class Notice(object):
     sender = cotimail_settings.COTIMAIL_SENDER
     recipients = ['Firstname Lastname <firstname.lastname@example.com>']
     reply_to = cotimail_settings.COTIMAIL_REPLY_EMAIL
+    cc = []
+    bcc = []
 
     default_context = {}
     context = {}
@@ -190,6 +192,8 @@ class Notice(object):
         email_log.recipients = json.dumps(self.recipients)
         email_log.sender = self.sender
         email_log.reply_to = self.reply_to
+        email_log.cc = self.cc
+        email_log.bcc = self.bcc
         email_log.status = status
         email_log.context_json = self.get_context_json()
         if status == 'SENT':
@@ -213,6 +217,8 @@ class Notice(object):
             from_email=self.sender,
             to=recipients,
             reply_to=[self.reply_to],
+            cc=self.cc,
+            bcc=self.bcc,
             headers=self.headers  # optional extra headers
         )
         if self.html_template:
