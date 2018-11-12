@@ -9,7 +9,7 @@ def admin_menu(context):
             "description": "See email template and logs.",
             "nav_items": [
                 {
-                    "text": "Notices",
+                    "text": "Templates",
                     "url": reverse("mail-admin:list"),
                     "icon": "envelope",
                     "permissions": [

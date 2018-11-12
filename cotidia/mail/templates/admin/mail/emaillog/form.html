@@ -8,22 +8,15 @@
     {% endif %}
 {% endblock %}
 
-{% block toolbar %}
-    <span class="toolbar__title">{% trans "Cotimail" %}</span>
-{% endblock toolbar %}
+{% block body_class %}
+    content--centered
+{% endblock body_class %}
+
+{% block content_title %}
+    {% trans "Edit email" %}
+{% endblock content_title %}
 
 {% block page_content %}
-<div class="content__inner">
-    <p class="breadcrumb">
-        <a href="{% url 'mail-admin:list' %}">{% trans "Email templates" %}</a>
-        &nbsp;<span class="fa fa-angle-right"></span>&nbsp;
-        {% if log %}
-            {% trans "Edit email" %}
-        {% else %}
-            {% trans "New email" %}
-        {% endif %}
-    </p>
-</div>
 <form action="" method="post">
     {% csrf_token %}
     {% if form.non_field_errors %}
@@ -59,39 +52,30 @@
         {% if fieldset.description %}
             <p>{{ fieldset.description }}</p>
         {% endif %}
-
         {% for field in fieldset %}
             {% if field.is_hidden %}
                 {{ field }}
             {% else %}
-                <div class="grid">
-                    <div class="grid__span-2">
-                        <span class="form__label--inline">
-                            {{field.label}}
-                        </span>
-                    </div>
-                    <div class="{% if field.field.widget.attrs.rows %}grid__span-6{% else %}grid__span-3{% endif %}">
-                        {% if field.field.widget.attrs.class == 'form__text' %}
-                            {% include "admin/includes/text-field.html" %}
-                        {% elif field.field.widget.attrs.class == 'form__select' %}
-                            {% include "admin/includes/select-field.html" %}
-                        {% elif field.field.widget.attrs.class == 'form__checkbox' %}
-                            {% include "admin/includes/checkbox-field.html" %}
-                        {% else %}
-                            {% include "admin/includes/text-field.html" %}
-                        {% endif %}
-                    </div>
+                <div class="form__row">
+                    {% include "admin/generic/form/field_as_div.html" %}
                 </div>
             {% endif %}
         {% endfor %}
-
         </fieldset>
     </div>
     {% endfor %}
 
     <div class="content__inner">
         <input type="submit" value="{% trans 'Save' %}" class="btn btn--primary" />
-        <a class="btn btn--transparent" href="{% url 'mail-admin:list' %}">{% trans "Cancel" %}</a>
+        {% if log %}
+            <a class="btn btn--transparent" href="{% url 'mail-admin:emaillog-detail' log.id %}">
+                {% trans "Cancel" %}
+            </a>
+        {% else %}
+            <a class="btn btn--transparent" href="{% url 'mail-admin:emaillog-list' %}">
+                {% trans "Cancel" %}
+            </a>
+        {% endif %}
     </div>
 </form>
 {% endblock %}

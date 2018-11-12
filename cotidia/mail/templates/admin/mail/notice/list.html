@@ -1,7 +1,12 @@
 {% extends "admin/generic/page/list.html" %}{% load i18n admin_toolbar_tags admin_list_tags %}
 {% block title %}
-    {{verbose_name}}
+    Email templates
 {% endblock title %}
+
+{% block body_class %}
+    {{block.super}}
+    content--centered
+{% endblock body_class %}
 
 {% block content_title %}
     {% trans "Email templates" %}
@@ -10,7 +15,7 @@
     {% if perms.cotimail.change_emaillog %}
     <a href="{% url 'mail-admin:logs' %}"
         class="[ toolbar__item ] [ btn btn--primary btn--small pull-right ]">
-        <span class="fa fa-file-text-o"></span> {% trans "View email logs" %}
+        <span class="fa fa-list"></span> {% trans "View email logs" %}
     </a>
     {% endif %}
 {% endblock content_actions %}
@@ -39,7 +44,7 @@
                         {% if notice.html_template %}
                             <a href="{% url 'mail-admin:template_preview_html' notice.identifier %}">HTML</a> |
                         {% endif %}
-                        <a href="{% url 'mail-admin:template_preview_text' notice.identifier 'text' %}">TXT</a>
+                        <a href="{% url 'mail-admin:template_preview_text' notice.identifier %}">TXT</a>
                     </td>
                     <td>
                         <a href="{% url 'mail-admin:new_email' notice.identifier %}"
@@ -56,7 +61,6 @@
                 {% endfor %}
                 </tbody>
             </table>
-            {% include 'admin/generic/list/list.html' %}
         </div>
     </div>
 </div>

@@ -1,0 +1,21 @@
+{% load i18n %}
+<fieldset class="detail">
+    <div class="content__inner">
+        <iframe src="{% url 'mail-admin:email_preview_standalone' object.id %}" style="width: 100%; height: 800px; border: none; background-color: #fff;"></iframe>
+    </div>
+
+
+    <div class="fieldset-actions">
+        <a href="{% url 'mail-admin:emaillog-update' object.id %}" class="btn btn--change">
+            {% trans "Edit" %}
+        </a>
+        {% if object.status == 'SAVED' %}
+        <a href="{% url 'mail-admin:email_sent' object.id %}" class="btn btn--primary">
+            {% trans "Send" %}
+        </a>
+        {% endif %}
+        <a href="{% url 'mail-admin:emaillog-list' %}" class="btn btn--transparent pull-right">
+            {% trans "Back" %}
+        </a>
+    </div>
+</fieldset>
