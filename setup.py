@@ -18,7 +18,7 @@ setup(
     },
     namespace_packages=["cotidia"],
     include_package_data=True,
-    install_requires=["django-form-utils==1.0.*", "django-anymail==6.*"],
+    install_requires=["django-anymail==10.3"],
     classifiers=[
         "Framework :: Django",
         "Intended Audience :: Developers",
